@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Drawr</string>
+    <string name="session_id">Session ID</string>
 </resources>
