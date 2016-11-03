@@ -18,10 +18,12 @@
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true">
-        <EditText
+        <de.htwb.drawr.view.CustomEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/session_id"/>
+            android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+            android:hint="@string/session_id"
+            android:singleLine="true"/>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
