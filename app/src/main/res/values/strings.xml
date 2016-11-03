@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">Drawr</string>
     <string name="session_id">Session ID</string>
+    <string name="new_session_title">New Session</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="new_session_question">Do you want the Session to be online or offline?</string>
+    <string name="canvas">Canvas</string>
+    <string name="preferences">Preferences</string>
+    <string name="quit">Quit</string>
+
+    <array name="nav_drawer_list_array">
+        <item>@string/canvas</item>
+        <item>@string/preferences</item>
+        <item>@string/quit</item>
+    </array>
 </resources>
