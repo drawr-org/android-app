@@ -21,9 +21,6 @@ import android.widget.Toast;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 
-import jp.co.recruit_lifestyle.android.floatingview.FloatingViewListener;
-import jp.co.recruit_lifestyle.android.floatingview.FloatingViewManager;
-
 
 public class MainActivity extends AppCompatActivity {
 
