@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 /**
  * Created by Lao on 03.11.2016.
@@ -58,7 +59,13 @@ public class CanvasFragment extends Fragment {
                         }
                 }
                 return false;
+            }
+        });
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Coming soon...", Toast.LENGTH_SHORT).show();
             }
         });
 
