@@ -6,13 +6,28 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
-
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
+apply plugin: "org.sonarqube"
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.host.url", "http://etsag.de:9000"
+        property "sonar.forceAuthentication", true
+        //----- Security (when 'sonar.forceAuthentication' is set to 'true')
+        property "sonar.login", "a50f65ee91c791068a39604a2a71072b4c4e19cd"
+        property "sonar.projectKey", "com.htwb.android-app:master"
+    }
+}
+
 allprojects {
+    group "de.htwb"
+    version "1.0.0-SNAPSHOT"
+
     repositories {
         jcenter()
     }
