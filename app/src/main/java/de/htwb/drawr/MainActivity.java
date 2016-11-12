@@ -19,7 +19,7 @@ import com.balysv.materialmenu.MaterialMenuDrawable;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-    private static String[] drawerCaptions;
+    private String[] drawerCaptions;
     private ListView mDrawerList;
 
     private CanvasFragment canvasFragment = new CanvasFragment();
