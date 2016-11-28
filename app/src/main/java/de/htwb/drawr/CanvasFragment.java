@@ -10,8 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
+
+import de.htwb.drawr.web.DrawrChromeClient;
 
 /**
  * Created by Lao on 03.11.2016.
@@ -22,20 +22,17 @@ public class CanvasFragment extends Fragment {
     private WebView webView;
     private FloatingActionButton fab;
     private boolean menusShown = true;
+    private DrawrChromeClient drawrChromeClient;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_canvas, container, false);
         webView = (WebView)view.findViewById(R.id.canvas_web_view);
+
+        drawrChromeClient = new DrawrChromeClient(getActivity(), webView);
+
         fab = (FloatingActionButton) view.findViewById(R.id.canvas_fab);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return false;
-            }
-        });
         webView.setOnTouchListener(new View.OnTouchListener() {
             private float pointX;
             private float pointY;
@@ -65,7 +62,8 @@ public class CanvasFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Coming soon...", Toast.LENGTH_SHORT).show();
+                int c = getResources().getColor(R.color.colorPrimary);
+                drawrChromeClient.setColor(c);
             }
         });
 
@@ -76,9 +74,16 @@ public class CanvasFragment extends Fragment {
         if(visible != menusShown) {
             menusShown = visible;
             if (menusShown) {
+                getActivity().getWindow().getDecorView()
+                        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                 fab.show();
                 ((AppCompatActivity) getActivity()).getSupportActionBar().show();
             } else {
+                int mUIFlag =  View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE;
+                getActivity().getWindow().getDecorView()
+                        .setSystemUiVisibility(mUIFlag);
                 fab.hide();
                 ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
             }
@@ -86,8 +91,14 @@ public class CanvasFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        webView.loadUrl("https://google.de");
+    public void onPause() {
+        super.onPause();
+        webView.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        webView.onResume();
     }
 }
