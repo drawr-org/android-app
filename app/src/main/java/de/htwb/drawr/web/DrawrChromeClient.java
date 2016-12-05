@@ -59,6 +59,7 @@ public class DrawrChromeClient extends WebChromeClient {
             try {
                 object.put("color", currentColor);
             } catch (JSONException e) {
+                Log.e("DrawrChromeClient", "JSON Exception in getOptions()", e);
                 e.printStackTrace();
             }
             Log.d("JavascriptInterface",object.toString());

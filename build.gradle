@@ -19,6 +19,7 @@ sonarqube {
         property "sonar.host.url", "https://sonar.etsag.de"
         property "sonar.forceAuthentication", true
         //----- Security (when 'sonar.forceAuthentication' is set to 'true')
+        property "sonar.language", "java"
         property "sonar.login", "a50f65ee91c791068a39604a2a71072b4c4e19cd"
         property "sonar.projectKey", "com.htwb.android-app:master"
     }
