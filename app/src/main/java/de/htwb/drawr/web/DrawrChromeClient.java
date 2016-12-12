@@ -1,6 +1,7 @@
 package de.htwb.drawr.web;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
@@ -8,6 +9,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import de.htwb.drawr.util.DrawingUtil;
+import de.htwb.drawr.view.DrawingDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,11 +21,12 @@ import org.json.JSONObject;
 public class DrawrChromeClient extends WebChromeClient {
 
     WebView webView;
-    String currentColor;
     Context context;
+    SharedPreferences sharedPreferences;
 
     public DrawrChromeClient(Context context, WebView webView) {
         this.context = context;
+        sharedPreferences = context.getSharedPreferences(DrawingDialog.DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
         webView.setWebChromeClient(this);
         this.webView = webView;
         webView.getSettings().setJavaScriptEnabled(true);
@@ -36,11 +40,6 @@ public class DrawrChromeClient extends WebChromeClient {
         webView.loadUrl(s);
     }
 
-    public void setColor(int c) {
-        currentColor = String.format("#%06X", (0xFFFFFF & c));
-        callJavaScript("updateOptions()");
-    }
-
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         Log.d("DrawrChromeClient", consoleMessage.message());
@@ -50,14 +49,19 @@ public class DrawrChromeClient extends WebChromeClient {
     //JS Interface
 
     private final class DrawrJavaScriptInterface {
-        DrawrJavaScriptInterface() {}
 
         @JavascriptInterface
         public String getOptions() {
-            Toast.makeText(context, "getOptions()", Toast.LENGTH_SHORT).show();
+            int intColor = sharedPreferences.getInt(DrawingDialog.SHARED_PREF_KEY_COLOR,
+                    DrawingDialog.SHARED_PREF_DEFAULT_COLOR);
+            String strColor = DrawingUtil.colorToHex(intColor);
+            String stroke = sharedPreferences.getString(DrawingDialog.SHARED_PREF_KEY_STROKE,
+                    DrawingDialog.SHARED_PREF_DEFAULT_STROKE);
+
             JSONObject object = new JSONObject();
             try {
-                object.put("color", currentColor);
+                object.put("color", strColor);
+                object.put("strokeWidth", stroke);
             } catch (JSONException e) {
                 Log.e("DrawrChromeClient", "JSON Exception in getOptions()", e);
                 e.printStackTrace();

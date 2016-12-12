@@ -1,9 +1,12 @@
 package de.htwb.drawr;
 
-import android.app.Fragment;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -11,13 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import de.htwb.drawr.view.DrawingDialog;
+import de.htwb.drawr.view.OnDialogClosedListener;
 import de.htwb.drawr.web.DrawrChromeClient;
 
 /**
  * Created by Lao on 03.11.2016.
  */
 
-public class CanvasFragment extends Fragment {
+public class CanvasFragment extends Fragment implements OnDialogClosedListener {
 
     private WebView webView;
     private FloatingActionButton fab;
@@ -62,12 +67,29 @@ public class CanvasFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int c = getResources().getColor(R.color.colorPrimary);
-                drawrChromeClient.setColor(c);
+                showDialog();
             }
         });
 
         return view;
+    }
+
+    void showDialog() {
+
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = new DrawingDialog();
+        ((DrawingDialog)newFragment).setOnDialogClosedListener(this);
+        newFragment.show(ft, "dialog");
     }
 
     public void showMenus(boolean visible) {
@@ -100,5 +122,10 @@ public class CanvasFragment extends Fragment {
     public void onResume() {
         super.onResume();
         webView.onResume();
+    }
+
+    @Override
+    public void onDialogClosed() {
+        drawrChromeClient.callJavaScript("updateOptions()");
     }
 }

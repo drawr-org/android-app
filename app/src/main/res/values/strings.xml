@@ -9,9 +9,21 @@
     <string name="preferences">Preferences</string>
     <string name="quit">Quit</string>
 
+    <string name="small">small</string>
+    <string name="normal">normal</string>
+    <string name="large">large</string>
+    <string name="huge">huge</string>
+
     <array name="nav_drawer_list_array">
         <item>@string/canvas</item>
         <item>@string/preferences</item>
         <item>@string/quit</item>
+    </array>
+
+    <array name="canvas_pen_stroke">
+        <item>@string/small</item>
+        <item>@string/normal</item>
+        <item>@string/large</item>
+        <item>@string/huge</item>
     </array>
 </resources>
