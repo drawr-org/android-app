@@ -21,6 +21,7 @@
         <de.htwb.drawr.view.CustomEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/sessionIdED"
             android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
             android:hint="@string/session_id"
             android:singleLine="true"/>
@@ -34,6 +35,7 @@
                 android:background="@drawable/ic_add_black_24dp"
                 android:id="@+id/login_new_session"/>
             <Button
+                    android:id="@+id/login_camera"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/ic_photo_camera_black_24dp"

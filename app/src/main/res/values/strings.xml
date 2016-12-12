@@ -4,7 +4,9 @@
     <string name="new_session_title">New Session</string>
     <string name="online">Online</string>
     <string name="offline">Offline</string>
+    <string name="cancel">Cancel</string>
     <string name="new_session_question">Do you want the Session to be online or offline?</string>
+    <string name="try_again">Please try again...</string>
     <string name="canvas">Canvas</string>
     <string name="preferences">Preferences</string>
     <string name="quit">Quit</string>

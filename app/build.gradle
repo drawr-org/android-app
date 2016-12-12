@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "de.htwb.drawr"
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -27,5 +27,9 @@ dependencies {
     compile 'org.droidparts:droidparts:2.9.4'
     compile 'com.balysv.materialmenu:material-menu:2.0.0'
     compile "com.github.danielnilsson9:color-picker-view:1.4.0@aar"
+    compile('com.github.KingsMentor:MobileVisionBarcodeScanner:v1.2') { transitive = true }
+    compile 'androidmads.library.qrgenearator:QRGenearator:1.0.0'
+
+
 
 }
