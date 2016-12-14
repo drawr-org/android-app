@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2"
+        classpath 'com.palantir:jacoco-coverage:0.4.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -22,6 +23,7 @@ sonarqube {
         property "sonar.language", "java"
         property "sonar.login", "a50f65ee91c791068a39604a2a71072b4c4e19cd"
         property "sonar.projectKey", "com.htwb.android-app:master"
+        property "sonar.jacoco.reportPath", "build/jacoco/test.exec"
     }
 }
 
@@ -35,8 +37,43 @@ allprojects {
             url "https://jitpack.io"
         }
     }
+
+    tasks.withType(Test) {
+        include "**/UT*.class"
+        include "**/IT*.class"
+        include "**/Test*.class"
+        include "**/*Test.class"
+
+        testLogging {
+            // set options for log level LIFECYCLE
+            events "passed", "skipped", "failed", "standardOut"
+            showExceptions true
+            exceptionFormat "full"
+            showCauses true
+            showStackTraces true
+
+            // set options for log level DEBUG and INFO
+            debug {
+                events "started", "passed", "skipped", "failed", "standardOut", "standardError"
+                exceptionFormat "full"
+            }
+            info.events = debug.events
+            info.exceptionFormat = debug.exceptionFormat
+
+            afterSuite { desc, result ->
+                if (!desc.parent) { // will match the outermost suite
+                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                    def startItem = '|  ', endItem = '  |'
+                    def repeatLength = startItem.length() + output.length() + endItem.length()
+                    println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+apply plugin: 'com.palantir.jacoco-full-report'
