@@ -4,6 +4,8 @@ package de.htwb.drawr;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -32,12 +34,6 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     private boolean menusShown = true;
     private DrawrChromeClient drawrChromeClient;
     private SharedPreferences sharedPreferences;
-    private static final int[][] STATES = new int[][] {
-            new int[] { android.R.attr.state_enabled}, // enabled
-            new int[] {-android.R.attr.state_enabled}, // disabled
-            new int[] {-android.R.attr.state_checked}, // unchecked
-            new int[] { android.R.attr.state_pressed}  // pressed
-    };
 
     @Nullable
     @Override
@@ -145,14 +141,8 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     }
 
     private void setFabColor(int color) {
-        final int[] colors = new int[] {
-                color,
-                color,
-                color,
-                color
-        };
-        ColorStateList list = new ColorStateList(STATES, colors);
-        fab.setBackgroundTintList(list);
-        fab.setBackgroundColor(color);
+        Drawable drawable = getActivity().getResources().getDrawable(R.drawable.ic_create_black_24dp);
+        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        fab.setImageDrawable(drawable);
     }
 }
