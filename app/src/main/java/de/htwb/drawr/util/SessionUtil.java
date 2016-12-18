@@ -10,7 +10,7 @@ public final class SessionUtil {
     public final static Pattern ULID_PATTERN = Pattern.compile("[A-Z0-9]*");
     public static final int ULID_LENGTH = 26;
 
-    private SessionUtil(){};
+    private SessionUtil(){}
 
     /**
      * Validates a String if it matches the Session Id Pattern

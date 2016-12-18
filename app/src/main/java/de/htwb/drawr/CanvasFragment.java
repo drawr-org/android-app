@@ -1,6 +1,9 @@
 package de.htwb.drawr;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +31,13 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     private FloatingActionButton fab;
     private boolean menusShown = true;
     private DrawrChromeClient drawrChromeClient;
+    private SharedPreferences sharedPreferences;
+    private static final int[][] STATES = new int[][] {
+            new int[] { android.R.attr.state_enabled}, // enabled
+            new int[] {-android.R.attr.state_enabled}, // disabled
+            new int[] {-android.R.attr.state_checked}, // unchecked
+            new int[] { android.R.attr.state_pressed}  // pressed
+    };
 
     @Nullable
     @Override
@@ -63,6 +73,8 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                 return false;
             }
         });
+
+        sharedPreferences =  getActivity().getSharedPreferences(DrawingDialog.DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +138,21 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
 
     @Override
     public void onDialogClosed() {
+        int intColor =  sharedPreferences.getInt(DrawingDialog.SHARED_PREF_KEY_COLOR,
+                DrawingDialog.SHARED_PREF_DEFAULT_COLOR);
+        setFabColor(intColor);
         drawrChromeClient.callJavaScript("updateOptions()");
+    }
+
+    private void setFabColor(int color) {
+        final int[] colors = new int[] {
+                color,
+                color,
+                color,
+                color
+        };
+        ColorStateList list = new ColorStateList(STATES, colors);
+        fab.setBackgroundTintList(list);
+        fab.setBackgroundColor(color);
     }
 }

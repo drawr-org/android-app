@@ -11,6 +11,10 @@
     <string name="preferences">Preferences</string>
     <string name="quit">Quit</string>
 
+    <string name="updating_lib">Updating components...</string>
+    <string name="download_successful">Download successful</string>
+    <string name="download_failed">Download failed</string>
+
     <string name="small">small</string>
     <string name="normal">normal</string>
     <string name="large">large</string>

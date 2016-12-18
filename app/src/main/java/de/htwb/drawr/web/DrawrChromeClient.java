@@ -31,7 +31,22 @@ public class DrawrChromeClient extends WebChromeClient {
         this.webView = webView;
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new DrawrJavaScriptInterface(), "Android");
-        webView.loadUrl("file:///android_asset/index.html");
+
+        final String INDEX_HTML =
+                "<!DOCTYPE html>\n" +
+                        "<html>\n" +
+                        "  <head>\n" +
+                        "    <title>Playing with canvas drawing</title>\n" +
+                        "    <link rel=\"stylesheet\" href=\"style.css\" />\n" +
+                        "  </head>\n" +
+                        "  <body>\n" +
+                        "    <div id=\"canvasDiv\"></div>\n" +
+                        "    <script type=\"text/javascript\" src=file://"+context.getFilesDir().getAbsolutePath()+CoreLibDownloader.CORE_LIB_FILE_NAME+"></script>\n" +
+                        "    <script type=\"text/javascript\" src=\"main.js\"></script>\n" +
+                        "  </body>\n" +
+                        "</html>\n";
+
+        webView.loadDataWithBaseURL("file:///android_asset/", INDEX_HTML, "text/html", "utf-8", "");
     }
 
     public void callJavaScript(String function) {
