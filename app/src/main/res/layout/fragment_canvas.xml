@@ -6,20 +6,44 @@
                                                  android:layout_height="match_parent">
 
     <WebView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/canvas_web_view"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/canvas_web_view"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/canvas_fab"
-        android:src="@drawable/ic_create_black_24dp"
-        app:fabSize="normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        app:backgroundTint="@color/colorSecondary"
-        android:layout_margin="16dp"
-        app:layout_anchor="@id/canvas_web_view"
-        app:layout_anchorGravity="bottom|right|end" />
+    <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/canvas_fab_menu"
+            android:src="@drawable/ic_create_black_24dp"
+            app:fabSize="normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            app:menu_colorNormal="@color/colorSecondary"
+            app:menu_colorPressed="@color/colorSecondary"
+            app:menu_colorRipple="@color/colorSecondary"
+            android:layout_margin="16dp"
+            app:layout_anchor="@id/canvas_web_view"
+            app:layout_anchorGravity="bottom|right|end">
+
+        <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/toggle_fullscreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fullscreen_white_24dp"
+                app:fab_size="mini"
+                app:fab_label="@string/fullscreen"
+                app:fab_colorNormal="@color/colorSecondary"
+                app:fab_colorPressed="@color/colorSecondary"
+                app:fab_colorRipple="@color/colorSecondary"/>
+
+        <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/pen_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_create_black_24dp"
+                app:fab_size="mini"
+                app:fab_label="@string/pen"/>
+
+    </com.github.clans.fab.FloatingActionMenu>
+
 
 </android.support.design.widget.CoordinatorLayout>

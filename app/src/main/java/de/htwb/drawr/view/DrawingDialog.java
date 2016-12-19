@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
+import android.util.ArraySet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import com.github.danielnilsson9.colorpickerview.view.ColorPickerView;
 import de.htwb.drawr.R;
 import de.htwb.drawr.util.DrawingUtil;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * Created by laokoon on 12/12/16.
  */
@@ -29,6 +33,7 @@ public class DrawingDialog extends DialogFragment {
     public static final String DRAWING_SHARED_PREF_KEY = "drawing";
     public static final String SHARED_PREF_KEY_COLOR = "color";
     public static final String SHARED_PREF_KEY_STROKE = "stroke";
+    public static final String SHARED_PREF_KEY_LAST_COLORS = "last_colors";
     public static final int SHARED_PREF_DEFAULT_COLOR = 0;
     public static final String SHARED_PREF_DEFAULT_STROKE = "normal";
 
@@ -81,6 +86,11 @@ public class DrawingDialog extends DialogFragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SHARED_PREF_KEY_COLOR, colorPickerFragment.getColor());
         editor.putString(SHARED_PREF_KEY_STROKE, penStrokeFragment.getStroke());
+
+        Set<String> stringSet = sharedPreferences.getStringSet(SHARED_PREF_KEY_LAST_COLORS, new HashSet<String>());
+
+        //ConcurrentLinkedQueue<String>
+
         editor.commit();
         super.onDismiss(dialog);
         if (listener != null) {

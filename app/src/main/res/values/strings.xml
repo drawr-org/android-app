@@ -20,6 +20,10 @@
     <string name="large">large</string>
     <string name="huge">huge</string>
 
+    <string name="pen">Pen</string>
+    <string name="fullscreen">Fullscreen</string>
+    <string name="exit_fullscreen">Exit Fullscreen</string>
+
     <array name="nav_drawer_list_array">
         <item>@string/canvas</item>
         <item>@string/preferences</item>

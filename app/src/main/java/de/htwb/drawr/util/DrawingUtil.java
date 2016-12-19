@@ -10,4 +10,8 @@ public final class DrawingUtil {
         return String.format("#%06X", (0xFFFFFF & color));
     }
 
+    public static final int hexToColor(String hex) {
+        return Integer.parseInt(hex.replace("#",""), 16);
+    }
+
 }

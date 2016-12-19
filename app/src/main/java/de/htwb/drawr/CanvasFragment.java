@@ -4,11 +4,11 @@ package de.htwb.drawr;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import android.webkit.WebViewClient;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import de.htwb.drawr.util.DrawingUtil;
 import de.htwb.drawr.view.DrawingDialog;
 import de.htwb.drawr.view.OnDialogClosedListener;
 import de.htwb.drawr.web.DrawrChromeClient;
@@ -30,7 +34,9 @@ import de.htwb.drawr.web.DrawrChromeClient;
 public class CanvasFragment extends Fragment implements OnDialogClosedListener {
 
     private WebView webView;
-    private FloatingActionButton fab;
+    private FloatingActionMenu fab_menu;
+    private FloatingActionButton fab_pen;
+    private FloatingActionButton fab_fullscreen;
     private boolean menusShown = true;
     private DrawrChromeClient drawrChromeClient;
     private SharedPreferences sharedPreferences;
@@ -42,42 +48,42 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         webView = (WebView)view.findViewById(R.id.canvas_web_view);
 
         drawrChromeClient = new DrawrChromeClient(getActivity(), webView);
-
-        fab = (FloatingActionButton) view.findViewById(R.id.canvas_fab);
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            private float pointX;
-            private float pointY;
-            private int tolerance = 50;
-
+        webView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        return false;
-                    case MotionEvent.ACTION_DOWN:
-                        pointX = event.getX();
-                        pointY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        boolean sameX = pointX + tolerance > event.getX() && pointX - tolerance < event.getX();
-                        boolean sameY = pointY + tolerance > event.getY() && pointY - tolerance < event.getY();
-                        if(sameX && sameY){
-                            //The user "clicked" certain point in the screen or just returned to the same position an raised the finger
-                            showMenus(!menusShown);
-                        }
-                }
-                return false;
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                drawrChromeClient.callJavaScript("updateOptions()");
             }
         });
 
+        fab_menu = (FloatingActionMenu) view.findViewById(R.id.canvas_fab_menu);
+        fab_pen = (FloatingActionButton) view.findViewById(R.id.pen_settings);
+        fab_fullscreen = (FloatingActionButton)view.findViewById(R.id.toggle_fullscreen);
+
         sharedPreferences =  getActivity().getSharedPreferences(DrawingDialog.DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab_pen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog();
             }
         });
+
+        fab_fullscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMenus(!menusShown);
+                if(menusShown) {
+                    fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_white_24dp));
+                    fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.fullscreen));
+                } else {
+                    fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_exit_white_24dp));
+                    fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.exit_fullscreen));
+                }
+            }
+        });
+
+        setFabColor(sharedPreferences.getInt(DrawingDialog.SHARED_PREF_KEY_COLOR, DrawingDialog.SHARED_PREF_DEFAULT_COLOR));
 
         return view;
     }
@@ -106,7 +112,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
             if (menusShown) {
                 getActivity().getWindow().getDecorView()
                         .setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                fab.show();
+                //fab.show();
                 ((AppCompatActivity) getActivity()).getSupportActionBar().show();
             } else {
                 int mUIFlag =  View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -114,9 +120,10 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE;
                 getActivity().getWindow().getDecorView()
                         .setSystemUiVisibility(mUIFlag);
-                fab.hide();
+                //fab.hide();
                 ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
             }
+            webView.requestLayout();
         }
     }
 
@@ -141,8 +148,10 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     }
 
     private void setFabColor(int color) {
-        Drawable drawable = getActivity().getResources().getDrawable(R.drawable.ic_create_black_24dp);
-        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-        fab.setImageDrawable(drawable);
+        color |= (255 << 24);
+        fab_pen.setColorNormal(color);
+        fab_pen.setColorRipple(color);
+        fab_pen.setColorPressed(color);
+        fab_pen.invalidate();
     }
 }

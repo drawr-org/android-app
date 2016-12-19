@@ -40,7 +40,7 @@ public class DrawrChromeClient extends WebChromeClient {
                         "    <link rel=\"stylesheet\" href=\"style.css\" />\n" +
                         "  </head>\n" +
                         "  <body>\n" +
-                        "    <div id=\"canvasDiv\"></div>\n" +
+                        "    <div id=\"canvasDiv\" class=\"fullscreen\"></div>\n" +
                         "    <script type=\"text/javascript\" src=file://"+context.getFilesDir().getAbsolutePath()+CoreLibDownloader.CORE_LIB_FILE_NAME+"></script>\n" +
                         "    <script type=\"text/javascript\" src=\"main.js\"></script>\n" +
                         "  </body>\n" +
@@ -75,8 +75,8 @@ public class DrawrChromeClient extends WebChromeClient {
 
             JSONObject object = new JSONObject();
             try {
-                object.put("color", strColor);
-                object.put("strokeWidth", stroke);
+                object.put("colour", strColor);
+                object.put("width", stroke);
             } catch (JSONException e) {
                 Log.e("DrawrChromeClient", "JSON Exception in getOptions()", e);
                 e.printStackTrace();
