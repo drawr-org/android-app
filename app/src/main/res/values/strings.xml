@@ -28,6 +28,7 @@
 
     <string name="pen">Pen</string>
     <string name="fullscreen">Fullscreen</string>
+    <string name="clear_canvas">Clear Canvas</string>
     <string name="exit_fullscreen">Exit Fullscreen</string>
 
     <array name="nav_drawer_list_array">

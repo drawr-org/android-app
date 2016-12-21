@@ -37,6 +37,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     private FloatingActionMenu fab_menu;
     private FloatingActionButton fab_pen;
     private FloatingActionButton fab_fullscreen;
+    private FloatingActionButton fab_clear;
     private boolean menusShown = true;
     private DrawrChromeClient drawrChromeClient;
     private SharedPreferences sharedPreferences;
@@ -69,6 +70,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         fab_menu = (FloatingActionMenu) view.findViewById(R.id.canvas_fab_menu);
         fab_pen = (FloatingActionButton) view.findViewById(R.id.pen_settings);
         fab_fullscreen = (FloatingActionButton)view.findViewById(R.id.toggle_fullscreen);
+        fab_clear = (FloatingActionButton)view.findViewById(R.id.clear_canvas);
 
         sharedPreferences =  getActivity().getSharedPreferences(DrawingDialog.DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
@@ -90,6 +92,13 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                     fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_exit_white_24dp));
                     fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.exit_fullscreen));
                 }
+            }
+        });
+
+        fab_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawrChromeClient.callJavaScript("myCanvas.clearCanvas()");
             }
         });
 
