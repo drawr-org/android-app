@@ -12,7 +12,7 @@
 
     <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/canvas_fab_menu"
-            android:src="@drawable/ic_create_black_24dp"
+            android:src="@drawable/ic_pen_white_24dp"
             app:fabSize="normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:id="@+id/pen_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_create_black_24dp"
+                android:src="@drawable/ic_pen_white_24dp"
                 app:fab_size="mini"
                 app:fab_label="@string/pen"/>
 

@@ -22,6 +22,8 @@
                   android:screenOrientation="sensorLandscape"/>
         <activity android:name=".QRScanActivity"
                   android:configChanges="orientation|screenSize"/>
+        <activity android:name=".PreferenceActivity"
+                  android:configChanges="orientation|screenSize"/>
     </application>
 
 </manifest>

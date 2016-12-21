@@ -15,6 +15,12 @@
     <string name="download_successful">Download successful</string>
     <string name="download_failed">Download failed</string>
 
+    <string name="general_settings">General Settings</string>
+    <string name="username">Username</string>
+    <string name="username_summary">Please provide a username...</string>
+    <string name="host">Host</string>
+    <string name="host_summary">The Host URL</string>
+
     <string name="small">small</string>
     <string name="normal">normal</string>
     <string name="large">large</string>

@@ -56,6 +56,16 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
             }
         });
 
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(fab_menu.isOpened()) {
+                    fab_menu.close(true);
+                }
+                return false;
+            }
+        });
+
         fab_menu = (FloatingActionMenu) view.findViewById(R.id.canvas_fab_menu);
         fab_pen = (FloatingActionButton) view.findViewById(R.id.pen_settings);
         fab_fullscreen = (FloatingActionButton)view.findViewById(R.id.toggle_fullscreen);
@@ -112,7 +122,6 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
             if (menusShown) {
                 getActivity().getWindow().getDecorView()
                         .setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                //fab.show();
                 ((AppCompatActivity) getActivity()).getSupportActionBar().show();
             } else {
                 int mUIFlag =  View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -120,7 +129,6 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE;
                 getActivity().getWindow().getDecorView()
                         .setSystemUiVisibility(mUIFlag);
-                //fab.hide();
                 ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
             }
             webView.requestLayout();
