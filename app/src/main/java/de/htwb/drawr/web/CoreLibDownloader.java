@@ -52,8 +52,8 @@ public class CoreLibDownloader {
             File dstFile = new File(mContext.getFilesDir().getPath()+CORE_LIB_FILE_NAME);
 
             if(dstFile.exists()) {
-                dstFile.delete();
-                Log.d("DownloadTask", "Old Lib deleted");
+                boolean result = dstFile.delete();
+                Log.d("DownloadTask", "Old Lib deleted: "+result);
             }
 
             InputStream input = null;
@@ -84,11 +84,9 @@ public class CoreLibDownloader {
                 output.flush();
             } catch (MalformedURLException e) {
                 Log.e("DownloadTask","Malformed URL!", e);
-                e.printStackTrace();
                 return false;
             } catch (IOException e) {
                 Log.e("DownloadTask","Error while downloading file!", e);
-                e.printStackTrace();
                 return false;
             } finally {
                 try {
@@ -97,7 +95,6 @@ public class CoreLibDownloader {
                     if (input != null)
                         input.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                     Log.e("DownloadTask","Error closing streams!", e);
                 }
             }

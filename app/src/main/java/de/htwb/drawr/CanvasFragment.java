@@ -165,10 +165,11 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     }
 
     private void setFabColor(int color) {
-        color |= (255 << 24);
-        fab_pen.setColorNormal(color);
-        fab_pen.setColorRipple(color);
-        fab_pen.setColorPressed(color);
+        int withAlpha = color;
+        withAlpha |= (255 << 24);
+        fab_pen.setColorNormal(withAlpha);
+        fab_pen.setColorRipple(withAlpha);
+        fab_pen.setColorPressed(withAlpha);
         fab_pen.invalidate();
     }
 }

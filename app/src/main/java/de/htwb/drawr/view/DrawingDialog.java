@@ -87,10 +87,6 @@ public class DrawingDialog extends DialogFragment {
         editor.putInt(SHARED_PREF_KEY_COLOR, colorPickerFragment.getColor());
         editor.putString(SHARED_PREF_KEY_STROKE, penStrokeFragment.getStroke());
 
-        Set<String> stringSet = sharedPreferences.getStringSet(SHARED_PREF_KEY_LAST_COLORS, new HashSet<String>());
-
-        //ConcurrentLinkedQueue<String>
-
         editor.commit();
         super.onDismiss(dialog);
         if (listener != null) {
