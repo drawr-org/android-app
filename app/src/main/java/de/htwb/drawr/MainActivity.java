@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -87,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String caption = drawerCaptions[position];
                 if(getString(R.string.canvas).equals(caption)) {
-                    showFragment(canvasFragment);
+                    showCanvas();
                 } else if(getString(R.string.preferences).equals(caption)) {
-                    showFragment(preferenceFragment);
+                    showPreferences();
                 } else if(getString(R.string.quit).equals(caption)) {
                     finish();
                 }
@@ -97,13 +98,30 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(mDrawerList);
             }
         });
-        showFragment(canvasFragment);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, canvasFragment)
+                .commit();
     }
 
-    private void showFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .commit();
+    private void showCanvas() {
+        showFragment(getSupportFragmentManager(), canvasFragment, preferenceFragment);
+    }
+
+    private void showPreferences() {
+        showFragment(getSupportFragmentManager(), preferenceFragment, canvasFragment);
+    }
+
+    private static void showFragment(FragmentManager manager, Fragment fragmentA, Fragment fragmentB) {
+        FragmentTransaction transaction = manager.beginTransaction();
+        if(manager.getFragments()!= null && !manager.getFragments().contains(fragmentA)) {
+            transaction.add(R.id.content_frame, fragmentA);
+        }
+        if(manager.getFragments() != null && !manager.getFragments().contains(fragmentB)) {
+            transaction.add(R.id.content_frame, fragmentB);
+        }
+
+        transaction.hide(fragmentB);
+        transaction.show(fragmentA);
+        transaction.commit();
     }
 }
