@@ -1,6 +1,5 @@
 package de.htwb.drawr;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import de.htwb.drawr.view.CustomEditText;
-import de.htwb.drawr.web.CoreLibDownloader;
 
 /**
  * Created by Lao on 03.11.2016.
@@ -76,8 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(i, QR_CAMERA_REQUEST_CODE);
             }
         });
-
-        downloadCoreLib();
     }
 
     @Override
@@ -97,34 +93,6 @@ public class LoginActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void downloadCoreLib() {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setTitle(R.string.updating_lib);
-        dialog.setMax(100);
-        CoreLibDownloader downloader = new CoreLibDownloader(this, new CoreLibDownloader.DownLoadProgressListener() {
-            @Override
-            public void progressChanged(int newProgress) {
-                Log.d("LoginFragment","Progress: "+newProgress);
-                dialog.setProgress(newProgress);
-            }
-
-            @Override
-            public void downloadDone(boolean result) {
-                dialog.dismiss();
-                Toast toast;
-                if(result) {
-                    toast = Toast.makeText(LoginActivity.this, R.string.download_successful, Toast.LENGTH_SHORT);
-                } else {
-                    toast = Toast.makeText(LoginActivity.this, R.string.download_failed, Toast.LENGTH_SHORT);
-                }
-                toast.show();
-            }
-        });
-        dialog.show();
-        downloader.start();
-
     }
 
     @Override
