@@ -6,7 +6,7 @@ Drawr.DrawingCanvas.prototype.clearCanvas = function() {
     this._context.save();
     this._context.scale(this._scaleX, this._scaleY);
 }
-let myCanvas = new Drawr.DrawingCanvas('canvasDiv');
+let myCanvas = new Drawr.DrawingCanvas('canvasDiv', JSON.parse(Android.getOptions()));
 
 function updateOptions() {
     let options = JSON.parse(Android.getOptions());

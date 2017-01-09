@@ -49,13 +49,6 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         webView = (WebView)view.findViewById(R.id.canvas_web_view);
 
         drawrChromeClient = new DrawrChromeClient(getActivity(), webView);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                drawrChromeClient.callJavaScript("updateOptions()");
-            }
-        });
 
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
