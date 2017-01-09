@@ -96,7 +96,6 @@ public class CustomEditText extends EditText implements OnTouchListener, OnFocus
             boolean tappedX = x >= left && x <= right && y >= 0 && y <= (getBottom() - getTop());
             if (tappedX) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    setText("");
                     if (listener != null) {
                         listener.actionPerformed();
                     }

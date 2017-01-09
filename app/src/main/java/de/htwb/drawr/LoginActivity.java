@@ -36,6 +36,15 @@ public class LoginActivity extends AppCompatActivity {
 
         editText = (CustomEditText)findViewById(R.id.sessionIdED);
 
+        editText.setListener(new CustomEditText.Listener() {
+            @Override
+            public void actionPerformed() {
+                //start session
+                Toast.makeText(LoginActivity.this,
+                        editText.getText().toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
         Button newSession = (Button)findViewById(R.id.login_new_session);
         newSession.setOnClickListener(new View.OnClickListener() {
             @Override

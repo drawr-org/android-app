@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
 import com.google.android.gms.vision.barcode.Barcode;
+import de.htwb.drawr.util.SessionUtil;
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
 import java.util.List;
@@ -25,15 +26,22 @@ public class QRScanActivity extends AppCompatActivity implements BarcodeRetrieve
         setContentView(R.layout.activity_qr_scan);
         BarcodeCapture capture = (BarcodeCapture) getSupportFragmentManager().findFragmentById(R.id.barcode);
         capture.setRetrieval(this);
+        capture.setShowDrawRect(true);
+        capture.setRectColors(new Integer[]{R.color.colorPrimary});
     }
 
     @Override
     public void onRetrieved(final Barcode barcode) {
-        Log.d("QRScanActivity", "retrieved: "+barcode.displayValue);
-        Intent i = new Intent();
-        i.putExtra(LoginActivity.KEY_QR_VALUE, barcode.displayValue);
-        setResult(RESULT_OK, i);
-        finish();
+        String ulid = barcode.displayValue;
+        if(SessionUtil.validateUlid(ulid)) {
+            Log.d("QRScanActivity", "valid: "+ulid);
+            Intent i = new Intent();
+            i.putExtra(LoginActivity.KEY_QR_VALUE, ulid);
+            setResult(RESULT_OK, i);
+            finish();
+        } else {
+            Log.d("QRScanActivity", "invalid: "+ulid);
+        }
 
     }
 
