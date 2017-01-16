@@ -3,15 +3,12 @@ package de.htwb.drawr;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,10 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import android.webkit.WebViewClient;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import de.htwb.drawr.util.DrawingUtil;
+import de.htwb.drawr.util.PenSettings;
 import de.htwb.drawr.view.DrawingDialog;
 import de.htwb.drawr.view.OnDialogClosedListener;
 import de.htwb.drawr.web.DrawrChromeClient;
@@ -40,7 +36,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     private FloatingActionButton fab_clear;
     private boolean menusShown = true;
     private DrawrChromeClient drawrChromeClient;
-    private SharedPreferences sharedPreferences;
+    private PenSettings penSettings;
 
     @Nullable
     @Override
@@ -65,7 +61,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         fab_fullscreen = (FloatingActionButton)view.findViewById(R.id.toggle_fullscreen);
         fab_clear = (FloatingActionButton)view.findViewById(R.id.clear_canvas);
 
-        sharedPreferences =  getActivity().getSharedPreferences(DrawingDialog.DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        penSettings = PenSettings.getInstance();
 
         fab_pen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,26 +74,46 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
             @Override
             public void onClick(View v) {
                 showMenus(!menusShown);
-                if(menusShown) {
-                    fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_white_24dp));
-                    fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.fullscreen));
-                } else {
-                    fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_exit_white_24dp));
-                    fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.exit_fullscreen));
-                }
+                updateFabFullscreenText();
             }
         });
 
         fab_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawrChromeClient.callJavaScript("myCanvas.clearCanvas()");
+                drawrChromeClient.callJavaScript("clearCanvas()");
             }
         });
 
-        setFabColor(sharedPreferences.getInt(DrawingDialog.SHARED_PREF_KEY_COLOR, DrawingDialog.SHARED_PREF_DEFAULT_COLOR));
+        fab_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menusShown = ((AppCompatActivity) getActivity()).getSupportActionBar().isShowing();
+                updateFabFullscreenText();
+            }
+        });
+
+        setFabColor(penSettings.getColor());
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                menusShown = isVisible;
+                updateFabFullscreenText();
+            }
+        });
 
         return view;
+    }
+
+    private void updateFabFullscreenText() {
+        if(menusShown) {
+            fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_white_24dp));
+            fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.fullscreen));
+        } else {
+            fab_fullscreen.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_fullscreen_exit_white_24dp));
+            fab_fullscreen.setLabelText(getActivity().getResources().getString(R.string.exit_fullscreen));
+        }
     }
 
     void showDialog() {
@@ -151,8 +167,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
 
     @Override
     public void onDialogClosed() {
-        int intColor =  sharedPreferences.getInt(DrawingDialog.SHARED_PREF_KEY_COLOR,
-                DrawingDialog.SHARED_PREF_DEFAULT_COLOR);
+        int intColor =  penSettings.getColor();
         setFabColor(intColor);
         drawrChromeClient.callJavaScript("updateOptions()");
     }

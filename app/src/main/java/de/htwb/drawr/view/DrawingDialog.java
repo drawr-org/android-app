@@ -21,27 +21,24 @@ import com.github.danielnilsson9.colorpickerview.dialog.ColorPickerDialogFragmen
 import com.github.danielnilsson9.colorpickerview.view.ColorPickerView;
 import de.htwb.drawr.R;
 import de.htwb.drawr.util.DrawingUtil;
+import de.htwb.drawr.util.PenSettings;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static de.htwb.drawr.util.PenSettings.*;
 
 /**
  * Created by laokoon on 12/12/16.
  */
 public class DrawingDialog extends DialogFragment {
 
-    public static final String DRAWING_SHARED_PREF_KEY = "drawing";
-    public static final String SHARED_PREF_KEY_COLOR = "color";
-    public static final String SHARED_PREF_KEY_STROKE = "stroke";
-    public static final String SHARED_PREF_KEY_LAST_COLORS = "last_colors";
-    public static final int SHARED_PREF_DEFAULT_COLOR = 0;
-    public static final String SHARED_PREF_DEFAULT_STROKE = "normal";
-
     private FragmentTabHost mTabHost;
     private ViewPager viewPager;
     private ColorPickerFragment colorPickerFragment;
-    private PenStrokeFragment penStrokeFragment;
-    private SharedPreferences sharedPreferences;
+    private ToolsFragment toolsFragment;
+
+    private static PenSettings penSettings;
 
     private OnDialogClosedListener listener;
 
@@ -49,25 +46,28 @@ public class DrawingDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_drawing, container);
 
-        sharedPreferences = getActivity().getSharedPreferences(DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
-
         getDialog().setTitle(R.string.preferences);
 
+        penSettings = PenSettings.getInstance();
+
         colorPickerFragment = new ColorPickerFragment();
-        penStrokeFragment = new PenStrokeFragment();
+        toolsFragment = new ToolsFragment();
+
 
         mTabHost = (FragmentTabHost)view.findViewById(R.id.tabs);
         mTabHost.setup(getActivity(), getChildFragmentManager());
-        mTabHost.addTab(mTabHost.newTabSpec(ColorPickerFragment.TAG).setIndicator("Color"), ColorPickerFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(PenStrokeFragment.TAG).setIndicator("Stroke"), PenStrokeFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec(ColorPickerFragment.TAG).setIndicator(getContext()
+                .getString(R.string.dialog_title_color)), ColorPickerFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec(ToolsFragment.TAG).setIndicator(getContext()
+                .getString(R.string.dialog_title_tools)), ToolsFragment.class, null);
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String s) {
                 if(ColorPickerFragment.TAG.equals(s)) {
                     showFragment(colorPickerFragment);
-                } else if(PenStrokeFragment.TAG.equals(s)) {
-                    showFragment(penStrokeFragment);
+                } else if (ToolsFragment.TAG.equals(s)) {
+                    showFragment(toolsFragment);
                 }
             }
         });
@@ -83,11 +83,10 @@ public class DrawingDialog extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(SHARED_PREF_KEY_COLOR, colorPickerFragment.getColor());
-        editor.putString(SHARED_PREF_KEY_STROKE, penStrokeFragment.getStroke());
 
-        editor.commit();
+        penSettings.setColor(colorPickerFragment.getColor());
+        penSettings.setStroke(colorPickerFragment.getStroke());
+        penSettings.setTool(toolsFragment.getTool());
         super.onDismiss(dialog);
         if (listener != null) {
             listener.onDialogClosed();
@@ -105,29 +104,40 @@ public class DrawingDialog extends DialogFragment {
     public static class ColorPickerFragment extends Fragment {
 
         public static final String TAG = ColorPickerFragment.class.getName();
-        private SharedPreferences sharedPreferences;
-        private ColorPickerView mColorPicker;
         private int currentColor;
+        private int stroke;
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
-            sharedPreferences = getActivity().getSharedPreferences(DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
-            setColor(sharedPreferences.getInt(SHARED_PREF_KEY_COLOR, SHARED_PREF_DEFAULT_COLOR));
-            LinearLayout ll = new LinearLayout(getActivity());
+            View view = inflater.inflate(R.layout.dailog_drawing_pen, container, false);
 
-            mColorPicker = new ColorPickerView(getActivity());
-            mColorPicker.setLayoutParams(new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            mColorPicker.setOnColorChangedListener(new ColorPickerView.OnColorChangedListener() {
+            ColorPickerView colorPickerView = (ColorPickerView)view.findViewById(R.id.colorpicker);
+            setColor(penSettings.getColor());
+            colorPickerView.setColor(currentColor);
+            colorPickerView.setOnColorChangedListener(new ColorPickerView.OnColorChangedListener() {
                 @Override
                 public void onColorChanged(int newColor) {
                     setColor(newColor);
                 }
             });
-            mColorPicker.setColor(currentColor);
-            ll.addView(mColorPicker);
-            return ll;
+
+            SeekBar seekBar = (SeekBar)view.findViewById(R.id.stroke_bar);
+            setStroke(penSettings.getStroke());
+            seekBar.setProgress(stroke);
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    stroke = progress+1;
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+            return view;
         }
 
         public int getColor() {
@@ -137,43 +147,54 @@ public class DrawingDialog extends DialogFragment {
         public void setColor(int newColor) {
             currentColor = newColor;
         }
+
+        public int getStroke() {
+            return stroke;
+        }
+
+        public void setStroke(int newStroke) {
+            stroke = newStroke;
+        }
     }
 
-    public static class PenStrokeFragment extends Fragment {
-        public static final String TAG = PenStrokeFragment.class.getName();
-        private SharedPreferences sharedPreferences;
-        private String[] penStrokes;
-        private String currentStroke;
+    public static class ToolsFragment extends Fragment {
+        public static final String TAG = ToolsFragment.class.getName();
         private  ListView list;
+        private static String[] tools;
+        private PenSettings.Tool currentTool;
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            sharedPreferences = getActivity().getSharedPreferences(DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
-            setStroke(sharedPreferences.getString(SHARED_PREF_KEY_STROKE,
-                    SHARED_PREF_DEFAULT_STROKE));
-            penStrokes = getActivity().getResources().getStringArray(R.array.canvas_pen_stroke);
-
             LinearLayout ll = new LinearLayout(getActivity());
+
+            tools = getActivity().getResources().getStringArray(R.array.canvas_pen_tools);
+            currentTool = penSettings.getTool();
 
             list  = new ListView(getActivity());
             list.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             list.setAdapter(new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_single_choice,
-                    penStrokes));
-
+                    tools));
             list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-            for(int i = 0; i < penStrokes.length; i++) {
-                if(currentStroke.equals(penStrokes[i])) {
+
+            for(int i = 0; i < tools.length; i++) {
+                if (tools[i].toUpperCase().equals(currentTool.name().toUpperCase())) {
                     list.setItemChecked(i, true);
+                    break;
                 }
             }
 
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    setStroke(penStrokes[i]);
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    for (PenSettings.Tool penTool :PenSettings.Tool.values()) {
+                        if(tools[position].toUpperCase().equals(penTool.name().toUpperCase())) {
+                            currentTool = penTool;
+                            break;
+                        }
+                    }
                 }
             });
 
@@ -181,12 +202,8 @@ public class DrawingDialog extends DialogFragment {
             return ll;
         }
 
-        public void setStroke(String newStroke) {
-            currentStroke = newStroke;
-        }
-
-        public String getStroke() {
-            return currentStroke;
+        public PenSettings.Tool getTool() {
+            return currentTool;
         }
     }
 }

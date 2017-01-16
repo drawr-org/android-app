@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import de.htwb.drawr.util.DrawingUtil;
+import de.htwb.drawr.util.PenSettings;
 import de.htwb.drawr.view.DrawingDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,11 +23,9 @@ public class DrawrChromeClient extends WebChromeClient {
 
     WebView webView;
     Context context;
-    SharedPreferences sharedPreferences;
 
     public DrawrChromeClient(Context context, WebView webView) {
         this.context = context;
-        sharedPreferences = context.getSharedPreferences(DrawingDialog.DRAWING_SHARED_PREF_KEY, Context.MODE_PRIVATE);
         webView.setWebChromeClient(this);
         this.webView = webView;
         webView.getSettings().setJavaScriptEnabled(true);
@@ -53,20 +52,7 @@ public class DrawrChromeClient extends WebChromeClient {
 
         @JavascriptInterface
         public String getOptions() {
-            int intColor = sharedPreferences.getInt(DrawingDialog.SHARED_PREF_KEY_COLOR,
-                    DrawingDialog.SHARED_PREF_DEFAULT_COLOR);
-            String strColor = DrawingUtil.colorToHex(intColor);
-            String stroke = sharedPreferences.getString(DrawingDialog.SHARED_PREF_KEY_STROKE,
-                    DrawingDialog.SHARED_PREF_DEFAULT_STROKE);
-
-            JSONObject object = new JSONObject();
-            try {
-                object.put("colour", strColor);
-                object.put("width", stroke);
-            } catch (JSONException e) {
-                Log.e("DrawrChromeClient", "JSON Exception in getOptions()", e);
-                e.printStackTrace();
-            }
+            JSONObject object = PenSettings.getInstance().getJSONObject();
             Log.d("JavascriptInterface",object.toString());
             return object.toString();
         }

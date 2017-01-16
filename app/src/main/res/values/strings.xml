@@ -27,10 +27,10 @@
     <string name="huge">huge</string>
 
     <string name="pen">Pen</string>
+    <string name="eraser">Eraser</string>
     <string name="fullscreen">Fullscreen</string>
     <string name="clear_canvas">Clear Canvas</string>
     <string name="exit_fullscreen">Exit Fullscreen</string>
-
     <array name="nav_drawer_list_array">
         <item>@string/canvas</item>
         <item>@string/preferences</item>
@@ -43,4 +43,12 @@
         <item>@string/large</item>
         <item>@string/huge</item>
     </array>
+    <array name="canvas_pen_tools">
+        <item>@string/pen</item>
+        <item>@string/eraser</item>
+    </array>
+
+    <string name="dialog_title_tools">Tools</string>
+    <string name="dialog_title_color">Color</string>
+    <string name="dialog_title_stroke">Stroke</string>
 </resources>
