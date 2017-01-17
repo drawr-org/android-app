@@ -2,7 +2,9 @@ package de.htwb.drawr;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+import de.htwb.drawr.util.SessionUtil;
 import de.htwb.drawr.view.CustomEditText;
 
 /**
@@ -40,8 +44,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void actionPerformed() {
                 //start session
-                Toast.makeText(LoginActivity.this,
-                        editText.getText().toString(), Toast.LENGTH_LONG).show();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                String username = prefs.getString(PreferenceActivity.KEY_USERNAME,new String());
+                String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
+                String sessionId = ((EditText)findViewById(R.id.sessionIdED)).getText().toString();
+                if(checkCredentials(username, host)) {
+                    if(SessionUtil.validateSessionAtHost(sessionId, host)) {
+                        startMainActivity(true, false, sessionId);
+                    }
+                }
             }
         });
 
@@ -55,14 +66,13 @@ public class LoginActivity extends AppCompatActivity {
                 builder.setPositiveButton(R.string.online, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(LoginActivity.this, "Coming soon...", Toast.LENGTH_SHORT).show();
+                        startMainActivity(true, true, new String());
                     }
                 });
                 builder.setNegativeButton(R.string.offline, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        startMainActivity(false, false, new String());
                     }
                 });
                 builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -83,6 +93,20 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(i, QR_CAMERA_REQUEST_CODE);
             }
         });
+    }
+
+    private boolean checkCredentials(String username, String host) {
+        Log.d("LoginActivity", "Checking credentials...");
+        return !(username.isEmpty() || host.isEmpty());
+    }
+    private void startMainActivity(boolean online, boolean newSession, String sessionId) {
+        Bundle extras = new Bundle(3);
+        extras.putBoolean(MainActivity.EXTRAS_KEY_ONLINE, online);
+        extras.putBoolean(MainActivity.EXTRAS_KEY_NEW_SESSION, newSession);
+        extras.putString(MainActivity.EXTRAS_KEY_SESSION_ID, sessionId);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
     @Override

@@ -7,6 +7,9 @@ import android.os.Bundle;
  */
 public class PreferenceActivity extends android.preference.PreferenceActivity {
 
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_HOST_URL = "host_url";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,7 +1,9 @@
 package de.htwb.drawr;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +21,11 @@ import com.balysv.materialmenu.MaterialMenuDrawable;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String EXTRAS_KEY_ONLINE = "online";
+    public static final String EXTRAS_KEY_NEW_SESSION = "new_session";
+    public static final String EXTRAS_KEY_SESSION_ID = "new_session";
+
 
     private DrawerLayout mDrawerLayout;
     private String[] drawerCaptions;
@@ -101,6 +109,29 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, canvasFragment)
                 .commit();
+
+        processExtras();
+    }
+
+    private void processExtras() {
+        Bundle extras = getIntent().getExtras();
+        boolean online = extras.getBoolean(EXTRAS_KEY_ONLINE, false);
+        if(online) {
+            boolean newSession =  extras.getBoolean(EXTRAS_KEY_NEW_SESSION, false);
+            if(newSession) {
+
+            } else {
+                String sessionId = extras.getString(EXTRAS_KEY_SESSION_ID, new String());
+                if(sessionId.isEmpty()) {
+                   Log.d("MainActivity", "processExtras: SessionId is empty!");
+                   finish();
+                } else {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    String username = prefs.getString(PreferenceActivity.KEY_USERNAME,new String());
+                    String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
+                }
+            }
+        }
     }
 
     private void showCanvas() {
