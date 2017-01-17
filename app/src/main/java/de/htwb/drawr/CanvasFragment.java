@@ -10,10 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.webkit.WebView;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -41,6 +38,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_canvas, container, false);
         webView = (WebView)view.findViewById(R.id.canvas_web_view);
 
@@ -179,5 +177,18 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         fab_pen.setColorRipple(withAlpha);
         fab_pen.setColorPressed(withAlpha);
         fab_pen.invalidate();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.drawing_menu, menu);
+        menu.findItem(R.id.menu_undo).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                drawrChromeClient.callJavaScript("undo()");
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

@@ -9,5 +9,11 @@ function updateOptions() {
 }
 
 function clearCanvas() {
+    console.log('updateUptions');
     myCanvas.clearCanvas(true);
+}
+
+function undo() {
+    console.log('undo');
+    myCanvas.undoLastClick();
 }

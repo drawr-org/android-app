@@ -31,17 +31,12 @@
     <string name="fullscreen">Fullscreen</string>
     <string name="clear_canvas">Clear Canvas</string>
     <string name="exit_fullscreen">Exit Fullscreen</string>
+
+    <string name="undo">Undo</string>
     <array name="nav_drawer_list_array">
         <item>@string/canvas</item>
         <item>@string/preferences</item>
         <item>@string/quit</item>
-    </array>
-
-    <array name="canvas_pen_stroke">
-        <item>@string/small</item>
-        <item>@string/normal</item>
-        <item>@string/large</item>
-        <item>@string/huge</item>
     </array>
     <array name="canvas_pen_tools">
         <item>@string/pen</item>
