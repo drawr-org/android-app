@@ -180,7 +180,7 @@ public class DrawingDialog extends DialogFragment {
             list.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
             for(int i = 0; i < tools.length; i++) {
-                if (tools[i].toUpperCase().equals(currentTool.name().toUpperCase())) {
+                if (tools[i].equalsIgnoreCase(currentTool.name())) {
                     list.setItemChecked(i, true);
                     break;
                 }
@@ -190,7 +190,7 @@ public class DrawingDialog extends DialogFragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     for (PenSettings.Tool penTool :PenSettings.Tool.values()) {
-                        if(tools[position].toUpperCase().equals(penTool.name().toUpperCase())) {
+                        if(tools[position].equalsIgnoreCase(penTool.name())) {
                             currentTool = penTool;
                             break;
                         }

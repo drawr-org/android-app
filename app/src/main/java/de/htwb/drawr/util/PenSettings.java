@@ -83,8 +83,7 @@ public class PenSettings {
             object.put("width", stroke);
             object.put("type", penTool.name().toLowerCase());
         } catch (JSONException e) {
-            Log.e("DrawrChromeClient", "JSON Exception in getOptions()", e);
-            e.printStackTrace();
+            Log.e("DrawrChromeClient", "JSON Exception in getJSONObject()", e);
         }
         return object;
     }
