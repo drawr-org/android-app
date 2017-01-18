@@ -28,29 +28,25 @@ public class PreferenceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_preferences, container, false);
-        userList = (LinearLayout) view.findViewById(R.id.preference_user_list);
+        ImageView imageView = (ImageView) view.findViewById(R.id.preference_qr_view);
+        TextView textView = (TextView) view.findViewById(R.id.preference_session_id);
+        String sessionId = getArguments().getString(MainActivity.EXTRAS_KEY_SESSION_ID, "");
+        if(sessionId.isEmpty()) {
+            textView.setVisibility(View.GONE);
+            imageView.setVisibility(View.GONE);
+        } else {
+            textView.setText(sessionId);
+            try {
+                Resources r = getActivity().getResources();
+                float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
+                QRGEncoder encoder = new QRGEncoder(sessionId, null, QRGContents.Type.TEXT, Math.round(px));
+                ((TextView) view.findViewById(R.id.preference_session_id)).setText(sessionId);
 
-        String[] testArray = new String[30];
-        for(int i = 0; i < testArray.length; i++) {
-            testArray[i] = "User"+(i+1);
-
-            View v = inflater.inflate(R.layout.list_item_user_preference, null, false);
-            ((TextView)v.findViewById(R.id.list_item_user_preference_name)).setText(testArray[i]);
-            userList.addView(v);
+                imageView.setImageBitmap(encoder.encodeAsBitmap());
+            } catch (WriterException e) {
+                Log.e("PreferenceFragment", "Writer Exception for QRCode thrown: ", e);
+            }
         }
-        String sessionId = getArguments().getString(MainActivity.EXTRAS_KEY_SESSION_ID);
-        try {
-            ImageView imageView = (ImageView) view.findViewById(R.id.preference_qr_view);
-            Resources r = getActivity().getResources();
-            float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
-            QRGEncoder encoder = new QRGEncoder(sessionId, null, QRGContents.Type.TEXT, Math.round(px));
-            ((TextView)view.findViewById(R.id.preference_session_id)).setText(sessionId);
-
-            imageView.setImageBitmap(encoder.encodeAsBitmap());
-        } catch (WriterException e) {
-            Log.e("PreferenceFragment", "Writer Exception for QRCode thrown: ", e);
-        }
-
         return view;
     }
 }

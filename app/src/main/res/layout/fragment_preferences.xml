@@ -28,16 +28,6 @@
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/ic_drawr_qr"
                 android:id="@+id/preference_qr_view"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/preference_qr_view"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/preference_user_list"
-                android:layout_alignParentBottom="true"
-                android:isScrollContainer="false"/>
         </RelativeLayout>
     </ScrollView>
 
