@@ -1,57 +1,73 @@
-let myCanvas = new Drawr.DrawingCanvas('canvasDiv', JSON.parse(Android.getOptions()));
-let server;
+let canvas = new Drawr.DrawingCanvas('canvasDiv', JSON.parse(Android.getOptions()));
+let client;
 function updateOptions() {
     let options = JSON.parse(Android.getOptions());
     console.log(options);
-    myCanvas.updateOptions(options);
+    canvas.updateOptions(options);
 }
 
 function clearCanvas() {
     console.log('updateUptions');
-    myCanvas.clearCanvas(true);
+    canvas.clearCanvas(true);
 }
 
 function undo() {
     console.log('undo');
-    myCanvas.undoLastClick();
+    canvas.undoLastClick();
 }
 
-function connectAndJoinSession(username, hostUrl, sessionId) {
-    connectToServer(username, hostUrl);
+function connectAndJoinSession(username, host, port) {
+    let options = {
+        host: host,
+        port: port
+    };
+    connectToServer(username, options);
     joinSession(sessionId);
 }
 
-function connectAndNewSession(username, hostUrl) {
-    connectToServer(username, hostUrl);
+function connectAndNewSession(username, host, port) {
+    let options = {
+        host: host,
+        port: port
+    };
+    connectToServer(username, options);
     newSession();
 }
 
-function connectToServer(username, hostUrl) {
-    try {
-        server = new Drawr.ServerConnection({
-            name: username,
-            id: '0'
-        }, hostUrl);
-    } catch (e) {
-        console.log(e);
-    }
-    server.addEventListener('update-canvas', function(data) {
-        if (server._user.name !== data.username) {
+function connectToServer(username, options) {
+    client = new Drawr.ServerConnection({
+        name: username,
+        id: '0'
+    }, options);
+    client.addEventListener('update-canvas', function(data) {
+        if (client._user.name !== data.username) {
             canvas.remoteUpdate(JSON.parse(data.canvasState));
         }
-    }, myCanvas);
+    });
 
-    myCanvas.addEventListener('new-click', function(clicks) {
-        server.sendCanvasUpdate(clicks);
+    canvas.addEventListener('new-click', function(clicks) {
+        client.sendCanvasUpdate(clicks);
     });
 }
 
 function joinSession(sessionId) {
     console.log('joinSession');
-    server.joinSession(sessionId, Android.joinServerCallback());
+    client.joinSession(sessionId)
+        .then(() => {
+            Android.joinSessionCallback('true');
+        })
+        .catch(() => {
+            Android.joinSessionCallback('false');
+        });
 }
 
 function newSession() {
     console.log('newSession');
-    server.newSession('Android', Android.newSessionCallback());
+    client.newSession('Android')
+        .then(id => {
+            Android.newSessionCallback('true', id);
+        })
+        .catch(err => {
+            Android.newSessionCallback('false');
+        });
 }
