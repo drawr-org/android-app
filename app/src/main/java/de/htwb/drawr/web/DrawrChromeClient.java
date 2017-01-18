@@ -9,6 +9,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import de.htwb.drawr.MainActivity;
 import de.htwb.drawr.util.DrawingUtil;
 import de.htwb.drawr.util.PenSettings;
 import de.htwb.drawr.view.DrawingDialog;
@@ -61,9 +62,17 @@ public class DrawrChromeClient extends WebChromeClient {
         public void joinSessionCallback(String success) {
             Toast.makeText(context, "joinServerCallback", Toast.LENGTH_LONG).show();
         }
+
         @JavascriptInterface
-        public void newSessionCallback(String success, String id) {
-            Toast.makeText(context, "newSessionCallback", Toast.LENGTH_LONG).show();
+        public void newSessionCallback(String success, String sessionId) {
+            boolean suc = Boolean.parseBoolean(success);
+            if(suc) {
+                Toast.makeText(context, "newSession With Id:"+sessionId, Toast.LENGTH_LONG).show();
+                ((MainActivity)context).updateSessionId(sessionId);
+            } else {
+                Toast.makeText(context, "newSession failed!", Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 

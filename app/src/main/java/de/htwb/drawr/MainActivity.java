@@ -133,4 +133,9 @@ public class MainActivity extends AppCompatActivity {
         transaction.show(fragmentA);
         transaction.commit();
     }
+
+    public void updateSessionId(String sessionId) {
+        canvasFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
+        preferenceFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
+    }
 }

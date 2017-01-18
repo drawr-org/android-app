@@ -18,8 +18,7 @@ public final class SessionUtil {
     public static final Pattern ULID_PATTERN = Pattern.compile("[A-Z0-9]*");
     public static final int ULID_LENGTH = 26;
 
-    private static final String VALIDATION_ENDPOINT = "validate";
-    private static final String VALIDATION_SESSION_ID = "sessionId";
+    private static final String VALIDATION_ENDPOINT = "session";
 
     private SessionUtil(){}
 
@@ -41,7 +40,7 @@ public final class SessionUtil {
         uriBuilder.scheme("http")
                 .encodedAuthority(host+":"+port)
                 .appendPath(VALIDATION_ENDPOINT)
-                .appendQueryParameter(VALIDATION_SESSION_ID, sessionId);
+                .appendPath(sessionId);
         String endpoint = uriBuilder.build().toString();
 
 

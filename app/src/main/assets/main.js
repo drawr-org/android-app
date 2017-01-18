@@ -16,12 +16,12 @@ function undo() {
     canvas.undoLastClick();
 }
 
-function connectAndJoinSession(username, host, port) {
+function connectAndJoinSession(username, host, port, sessionId) {
     let options = {
         host: host,
         port: port
     };
-    connectToServer(username, options);
+    initClient(username, options);
     joinSession(sessionId);
 }
 
@@ -30,11 +30,11 @@ function connectAndNewSession(username, host, port) {
         host: host,
         port: port
     };
-    connectToServer(username, options);
+    initClient(username, options);
     newSession();
 }
 
-function connectToServer(username, options) {
+function initClient(username, options) {
     client = new Drawr.ServerConnection({
         name: username,
         id: '0'
@@ -68,6 +68,7 @@ function newSession() {
             Android.newSessionCallback('true', id);
         })
         .catch(err => {
-            Android.newSessionCallback('false');
+            console.log(err);
+            Android.newSessionCallback('false', '');
         });
 }
