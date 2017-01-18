@@ -19,6 +19,8 @@ import android.widget.Toast;
 import de.htwb.drawr.util.SessionUtil;
 import de.htwb.drawr.view.CustomEditText;
 
+import java.net.HttpURLConnection;
+
 /**
  * Created by Lao on 03.11.2016.
  */
@@ -45,13 +47,18 @@ public class LoginActivity extends AppCompatActivity {
             public void actionPerformed() {
                 //start session
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                String username = prefs.getString(PreferenceActivity.KEY_USERNAME,new String());
-                String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
-                String sessionId = ((EditText)findViewById(R.id.sessionIdED)).getText().toString();
+                final String username = prefs.getString(PreferenceActivity.KEY_USERNAME,new String());
+                final String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
+                final String sessionId = ((EditText)findViewById(R.id.sessionIdED)).getText().toString();
                 if(checkCredentials(username, host)) {
-                    if(SessionUtil.validateSessionAtHost(sessionId, host)) {
-                        startMainActivity(true, false, sessionId);
-                    }
+                    SessionUtil.validateSessionAtHost(sessionId, host, new SessionUtil.AsyncWaiterListener<Integer>() {
+                        @Override
+                        public void resultDelivered(Integer result) {
+                            if(result == HttpURLConnection.HTTP_OK && !sessionId.equals("__test__")) {
+                                startMainActivity(true, false, sessionId);
+                            }
+                        }
+                    });
                 }
             }
         });

@@ -4,21 +4,28 @@ package de.htwb.drawr;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.*;
 import android.webkit.WebView;
 
+import android.webkit.WebViewClient;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import de.htwb.drawr.util.PenSettings;
 import de.htwb.drawr.view.DrawingDialog;
 import de.htwb.drawr.view.OnDialogClosedListener;
 import de.htwb.drawr.web.DrawrChromeClient;
+
+import static de.htwb.drawr.MainActivity.EXTRAS_KEY_NEW_SESSION;
+import static de.htwb.drawr.MainActivity.EXTRAS_KEY_ONLINE;
+import static de.htwb.drawr.MainActivity.EXTRAS_KEY_SESSION_ID;
 
 /**
  * Created by Lao on 03.11.2016.
@@ -41,6 +48,13 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_canvas, container, false);
         webView = (WebView)view.findViewById(R.id.canvas_web_view);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                processExtras();
+            }
+        });
 
         drawrChromeClient = new DrawrChromeClient(getActivity(), webView);
 
@@ -100,7 +114,6 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                 updateFabFullscreenText();
             }
         });
-
         return view;
     }
 
@@ -190,5 +203,29 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void processExtras() {
+        Bundle extras = getArguments();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String username = prefs.getString(PreferenceActivity.KEY_USERNAME, "");
+        String host = prefs.getString(PreferenceActivity.KEY_HOST_URL, "");
+        String ws =host.replace("http://", "ws://")+"/ws";
+        boolean online = extras.getBoolean(EXTRAS_KEY_ONLINE, false);
+        if(online) {
+            boolean newSession = extras.getBoolean(EXTRAS_KEY_NEW_SESSION, false);
+            if(newSession) {
+                drawrChromeClient.callJavaScript("connectAndNewSession('"+username+"','"+ws+"')");
+            } else {
+                String sessionId = extras.getString(EXTRAS_KEY_SESSION_ID, "");
+                if(sessionId != null && sessionId.isEmpty()) {
+                    Log.d("MainActivity", "processExtras: SessionId is empty!");
+                    getActivity().finish();
+                } else {
+                    Log.d("CanvasFragment", "joining session...");
+                    drawrChromeClient.callJavaScript("connectAndJoinSession('"+username+"','"+ws+"','"+sessionId+"')");
+                }
+            }
+        }
     }
 }

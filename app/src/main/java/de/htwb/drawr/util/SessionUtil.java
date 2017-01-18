@@ -1,6 +1,6 @@
 package de.htwb.drawr.util;
 
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
@@ -34,30 +34,51 @@ public final class SessionUtil {
         return false;
     }
 
-    public static final boolean validateSessionAtHost(String sessionId, String host) {
+    public static final void validateSessionAtHost(String sessionId, String host, final AsyncWaiterListener<Integer> listener) {
         Log.d("SessionUtil", "Validating Session at host...");
-        try {
-            String endpoint = host+"/"+VALIDATION_ENDPOINT+"?"+VALIDATION_SESSION_ID+"="+sessionId;
-            Log.d("SessionUtil","Validation At Host endpoint: "+endpoint);
-            URL url = new URL(endpoint);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            Log.d("SessionUtil", "Validate Session ResponseCode: "+responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                return true;
+        String endpoint = host+"/"+VALIDATION_ENDPOINT+"?"+VALIDATION_SESSION_ID+"="+sessionId;
+        HTTPExecutionTask task = new HTTPExecutionTask() {
+            @Override
+            protected void onPostExecute(Integer integer) {
+                listener.resultDelivered(integer);
             }
+        };
+        task.execute(endpoint);
+    }
 
-        } catch (MalformedURLException e) {
-            Log.e("SessionUtil", "Malformed Url! ", e);
-            return false;
-        } catch (IOException e) {
-            Log.e("SessionUtil", "IO Exception! ", e);
-            return false;
+    private static abstract class HTTPExecutionTask extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... params) {
+            if(params.length > 0) {
+                try {
+                    String endpoint = params[0];
+                    Log.d("SessionUtil","Validation At Host endpoint: "+endpoint);
+                    URL url = new URL(endpoint);
+                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                    connection.setRequestMethod("GET");
+
+                    int responseCode = connection.getResponseCode();
+                    Log.d("SessionUtil", "Validate Session ResponseCode: "+responseCode);
+
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        return responseCode;
+                    }
+
+                } catch (MalformedURLException e) {
+                    Log.e("SessionUtil", "Malformed Url! ", e);
+                    return HttpURLConnection.HTTP_NOT_FOUND;
+                } catch (IOException e) {
+                    Log.e("SessionUtil", "IO Exception! ", e);
+                    return HttpURLConnection.HTTP_NOT_FOUND;
+                }
+            }
+            return HttpURLConnection.HTTP_NOT_FOUND;
         }
-        return false;
+    }
+
+    public interface AsyncWaiterListener<T> {
+        void resultDelivered(T result);
     }
 
 }
