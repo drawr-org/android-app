@@ -212,12 +212,11 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         String username = prefs.getString(PreferenceActivity.KEY_USERNAME, "");
         String host = prefs.getString(PreferenceActivity.KEY_HOST_URL, "");
         String port = prefs.getString(PreferenceActivity.KEY_HOST_PORT, "3000");
-        String ws = buildWsUrl(host, port);
         boolean online = extras.getBoolean(EXTRAS_KEY_ONLINE, false);
         if(online) {
             boolean newSession = extras.getBoolean(EXTRAS_KEY_NEW_SESSION, false);
             if(newSession) {
-                drawrChromeClient.callJavaScript("connectAndNewSession('"+username+"','"+ws+"')");
+                drawrChromeClient.callJavaScript("connectAndNewSession('"+username+"','"+host+"','"+port+"')");
             } else {
                 String sessionId = extras.getString(EXTRAS_KEY_SESSION_ID, "");
                 if(sessionId != null && sessionId.isEmpty()) {
@@ -225,15 +224,9 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                     getActivity().finish();
                 } else {
                     Log.d("CanvasFragment", "joining session...");
-                    drawrChromeClient.callJavaScript("connectAndJoinSession('"+username+"','"+ws+"','"+sessionId+"')");
+                    drawrChromeClient.callJavaScript("connectAndJoinSession('"+username+"','"+host+"','"+port+"','"+sessionId+"')");
                 }
             }
         }
-    }
-
-    private static final String buildWsUrl(String host, String port) {
-        return (new Uri.Builder()).scheme("ws")
-                    .encodedAuthority(host+":"+port)
-                    .appendPath("ws").build().toString();
     }
 }

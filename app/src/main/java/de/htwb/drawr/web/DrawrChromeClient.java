@@ -58,11 +58,11 @@ public class DrawrChromeClient extends WebChromeClient {
         }
 
         @JavascriptInterface
-        public void joinServerCallback() {
+        public void joinSessionCallback(String success) {
             Toast.makeText(context, "joinServerCallback", Toast.LENGTH_LONG).show();
         }
         @JavascriptInterface
-        public void newSessionCallback() {
+        public void newSessionCallback(String success, String id) {
             Toast.makeText(context, "newSessionCallback", Toast.LENGTH_LONG).show();
         }
     }
