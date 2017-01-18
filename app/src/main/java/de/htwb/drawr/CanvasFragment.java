@@ -3,6 +3,7 @@ package de.htwb.drawr;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -210,7 +211,8 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String username = prefs.getString(PreferenceActivity.KEY_USERNAME, "");
         String host = prefs.getString(PreferenceActivity.KEY_HOST_URL, "");
-        String ws =host.replace("http://", "ws://")+"/ws";
+        String port = prefs.getString(PreferenceActivity.KEY_HOST_PORT, "3000");
+        String ws = buildWsUrl(host, port);
         boolean online = extras.getBoolean(EXTRAS_KEY_ONLINE, false);
         if(online) {
             boolean newSession = extras.getBoolean(EXTRAS_KEY_NEW_SESSION, false);
@@ -227,5 +229,11 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
                 }
             }
         }
+    }
+
+    private static final String buildWsUrl(String host, String port) {
+        return (new Uri.Builder()).scheme("ws")
+                    .encodedAuthority(host+":"+port)
+                    .appendPath("ws").build().toString();
     }
 }

@@ -4,10 +4,18 @@
         android:title="@string/general_settings">
         <EditTextPreference android:title="Username"
                             android:key="username"
-                            android:summary="@string/username_summary"/>
+                            android:summary="@string/username_summary"
+                            android:inputType="textNoSuggestions"/>
         <EditTextPreference android:title="@string/host"
                             android:key="host_url"
-                            android:summary="@string/host_summary"/>
+                            android:summary="@string/host_summary"
+                            android:inputType="textUri"/>
+        <EditTextPreference android:title="@string/port"
+                            android:summary="@string/port_summary"
+                            android:key="port"
+                            android:inputType="numberDecimal"/>
+        <Preference android:title="@string/test_connection"
+                     android:key="test_connection"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

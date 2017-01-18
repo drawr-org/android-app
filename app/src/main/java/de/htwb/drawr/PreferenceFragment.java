@@ -22,8 +22,6 @@ import com.google.zxing.WriterException;
 
 public class PreferenceFragment extends Fragment {
 
-    private static final String DUMMY_SESSION_ID = "1337";
-
     private LinearLayout userList;
 
     @Nullable
@@ -40,12 +38,13 @@ public class PreferenceFragment extends Fragment {
             ((TextView)v.findViewById(R.id.list_item_user_preference_name)).setText(testArray[i]);
             userList.addView(v);
         }
+        String sessionId = getArguments().getString(MainActivity.EXTRAS_KEY_SESSION_ID);
         try {
             ImageView imageView = (ImageView) view.findViewById(R.id.preference_qr_view);
             Resources r = getActivity().getResources();
             float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
-            QRGEncoder encoder = new QRGEncoder(DUMMY_SESSION_ID, null, QRGContents.Type.TEXT, Math.round(px));
-            ((TextView)view.findViewById(R.id.preference_session_id)).setText(DUMMY_SESSION_ID);
+            QRGEncoder encoder = new QRGEncoder(sessionId, null, QRGContents.Type.TEXT, Math.round(px));
+            ((TextView)view.findViewById(R.id.preference_session_id)).setText(sessionId);
 
             imageView.setImageBitmap(encoder.encodeAsBitmap());
         } catch (WriterException e) {

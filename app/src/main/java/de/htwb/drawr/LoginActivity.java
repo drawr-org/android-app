@@ -49,9 +49,10 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 final String username = prefs.getString(PreferenceActivity.KEY_USERNAME,new String());
                 final String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
+                final String port = prefs.getString(PreferenceActivity.KEY_HOST_PORT, "3000");
                 final String sessionId = ((EditText)findViewById(R.id.sessionIdED)).getText().toString();
                 if(checkCredentials(username, host)) {
-                    SessionUtil.validateSessionAtHost(sessionId, host, new SessionUtil.AsyncWaiterListener<Integer>() {
+                    SessionUtil.validateSessionAtHost(sessionId, host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
                         @Override
                         public void resultDelivered(Integer result) {
                             if(result == HttpURLConnection.HTTP_OK && !sessionId.equals("__test__")) {

@@ -1,5 +1,6 @@
 package de.htwb.drawr.util;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -34,9 +35,16 @@ public final class SessionUtil {
         return false;
     }
 
-    public static final void validateSessionAtHost(String sessionId, String host, final AsyncWaiterListener<Integer> listener) {
+    public static final void validateSessionAtHost(String sessionId, String host, String port, final AsyncWaiterListener<Integer> listener) {
         Log.d("SessionUtil", "Validating Session at host...");
-        String endpoint = host+"/"+VALIDATION_ENDPOINT+"?"+VALIDATION_SESSION_ID+"="+sessionId;
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme("http")
+                .encodedAuthority(host+":"+port)
+                .appendPath(VALIDATION_ENDPOINT)
+                .appendQueryParameter(VALIDATION_SESSION_ID, sessionId);
+        String endpoint = uriBuilder.build().toString();
+
+
         HTTPExecutionTask task = new HTTPExecutionTask() {
             @Override
             protected void onPostExecute(Integer integer) {
