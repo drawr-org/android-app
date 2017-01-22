@@ -11,9 +11,7 @@
     <string name="preferences">Preferences</string>
     <string name="quit">Quit</string>
 
-    <string name="updating_lib">Updating components...</string>
-    <string name="download_successful">Download successful</string>
-    <string name="download_failed">Download failed</string>
+    <string name="joining_session">Joining Session…</string>
 
     <string name="general_settings">General Settings</string>
     <string name="username">Username</string>

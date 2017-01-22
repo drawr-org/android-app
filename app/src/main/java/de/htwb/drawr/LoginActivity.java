@@ -1,5 +1,6 @@
 package de.htwb.drawr;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,11 +52,15 @@ public class LoginActivity extends AppCompatActivity {
                 final String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
                 final String port = prefs.getString(PreferenceActivity.KEY_HOST_PORT, "3000");
                 final String sessionId = ((EditText)findViewById(R.id.sessionIdED)).getText().toString();
+                final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
+                dialog.setTitle(R.string.joining_session);
+                dialog.show();
                 if(checkCredentials(username, host)) {
                     SessionUtil.validateSessionAtHost(sessionId, host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
                         @Override
                         public void resultDelivered(Integer result) {
                             if(result == HttpURLConnection.HTTP_OK && !sessionId.equals("__test__")) {
+                                dialog.dismiss();
                                 startMainActivity(true, false, sessionId);
                             }
                         }
@@ -143,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 String value = data.getExtras().getString(KEY_QR_VALUE);
                 editText.setText(value);
+                editText.performAction();
             }
         }
     }

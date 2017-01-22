@@ -109,6 +109,12 @@ public class CustomEditText extends EditText implements OnTouchListener, OnFocus
         return false;
     }
 
+    public void performAction() {
+        if(listener != null) {
+            listener.actionPerformed();
+        }
+    }
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
