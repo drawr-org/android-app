@@ -19,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import de.htwb.drawr.util.DrawingUtil;
 import de.htwb.drawr.util.PenSettings;
 import de.htwb.drawr.view.DrawingDialog;
 import de.htwb.drawr.view.OnDialogClosedListener;
@@ -181,6 +182,7 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     public void onDialogClosed() {
         int intColor =  penSettings.getColor();
         setFabColor(intColor);
+        fab_pen.setLabelText(DrawingUtil.getStringForTool(getActivity(), penSettings.getTool()));
         drawrChromeClient.callJavaScript("updateOptions()");
     }
 
