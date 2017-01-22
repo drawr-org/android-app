@@ -13,9 +13,11 @@
     <string name="try_again">Please try again…</string>
     <string name="canvas">Canvas</string>
     <string name="preferences">Preferences</string>
+    <string name="share">Share</string>
     <string name="quit">Quit</string>
     <string name="wrong_credentials">Please enter a username and configure the Host</string>
     <string name="wrong_session_or_timeout">Invalid SessionID oder Host timed out!</string>
+    <string name="offline_session_id">You are in an offline Session</string>
 
     <string name="joining_session">Joining Session…</string>
     <string name="joining_session_success">Joining session successful!</string>
@@ -49,7 +51,7 @@
     <string name="undo">Undo</string>
     <array name="nav_drawer_list_array">
         <item>@string/canvas</item>
-        <item>@string/preferences</item>
+        <item>@string/share</item>
         <item>@string/quit</item>
     </array>
     <array name="canvas_pen_tools">

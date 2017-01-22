@@ -1,12 +1,9 @@
 package de.htwb.drawr;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mDrawerList;
 
     private CanvasFragment canvasFragment = new CanvasFragment();
-    private PreferenceFragment preferenceFragment = new PreferenceFragment();
+    private ShareFragment shareFragment = new ShareFragment();
 
     private MaterialMenuDrawable materialMenu;
     private boolean isDrawerOpened;
@@ -45,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         canvasFragment.setArguments(getIntent().getExtras());
-        preferenceFragment.setArguments(getIntent().getExtras());
+        shareFragment.setArguments(getIntent().getExtras());
         drawerCaptions = getResources().getStringArray(R.array.nav_drawer_list_array);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -101,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 String caption = drawerCaptions[position];
                 if(getString(R.string.canvas).equals(caption)) {
                     showCanvas();
-                } else if(getString(R.string.preferences).equals(caption)) {
+                } else if(getString(R.string.share).equals(caption)) {
                     showPreferences();
                 } else if(getString(R.string.quit).equals(caption)) {
                     leaveSession();
@@ -116,11 +112,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCanvas() {
-        showFragment(getSupportFragmentManager(), canvasFragment, preferenceFragment);
+        showFragment(getSupportFragmentManager(), canvasFragment, shareFragment);
     }
 
     private void showPreferences() {
-        showFragment(getSupportFragmentManager(), preferenceFragment, canvasFragment);
+        showFragment(getSupportFragmentManager(), shareFragment, canvasFragment);
     }
 
     private static void showFragment(FragmentManager manager, Fragment fragmentA, Fragment fragmentB) {
@@ -139,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateSessionId(String sessionId) {
         canvasFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
-        preferenceFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
+        shareFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
     }
 
     @Override

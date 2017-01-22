@@ -25,6 +25,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.app_preferences);
+        setTitle(R.string.preferences);
 
         Preference button = findPreference("test_connection");
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
