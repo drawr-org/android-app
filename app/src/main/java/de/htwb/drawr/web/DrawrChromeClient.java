@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import de.htwb.drawr.MainActivity;
+import de.htwb.drawr.R;
 import de.htwb.drawr.util.DrawingUtil;
 import de.htwb.drawr.util.PenSettings;
 import de.htwb.drawr.view.DrawingDialog;
@@ -60,17 +61,24 @@ public class DrawrChromeClient extends WebChromeClient {
 
         @JavascriptInterface
         public void joinSessionCallback(String success) {
-            Toast.makeText(context, "joinServerCallback", Toast.LENGTH_LONG).show();
+            boolean suc = Boolean.parseBoolean(success);
+            if(suc) {
+                Toast.makeText(context, R.string.joining_session_success, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context, R.string.joining_session_failed, Toast.LENGTH_LONG).show();
+                ((MainActivity)context).finish();
+            }
         }
 
         @JavascriptInterface
         public void newSessionCallback(String success, String sessionId) {
             boolean suc = Boolean.parseBoolean(success);
             if(suc) {
-                Toast.makeText(context, "newSession With Id:"+sessionId, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.creating_session_success, Toast.LENGTH_LONG).show();
                 ((MainActivity)context).updateSessionId(sessionId);
             } else {
-                Toast.makeText(context, "newSession failed!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.creating_session_failed, Toast.LENGTH_LONG).show();
+                ((MainActivity)context).finish();
             }
 
         }

@@ -18,6 +18,10 @@
     <string name="wrong_session_or_timeout">Invalid SessionID oder Host timed out!</string>
 
     <string name="joining_session">Joining Session…</string>
+    <string name="joining_session_success">Joining session successful!</string>
+    <string name="joining_session_failed">Joining session failed!</string>
+    <string name="creating_session_success">Creating session successful!</string>
+    <string name="creating_session_failed">Creating session failed!</string>
 
     <string name="general_settings">General Settings</string>
     <string name="username">Username</string>
