@@ -1,5 +1,8 @@
 package de.htwb.drawr;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if(getString(R.string.preferences).equals(caption)) {
                     showPreferences();
                 } else if(getString(R.string.quit).equals(caption)) {
-                    finish();
+                    leaveSession();
                 }
                 mDrawerList.setItemChecked(position, true);
                 mDrawerLayout.closeDrawer(mDrawerList);
@@ -137,5 +140,27 @@ public class MainActivity extends AppCompatActivity {
     public void updateSessionId(String sessionId) {
         canvasFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
         preferenceFragment.getArguments().putString(EXTRAS_KEY_SESSION_ID, sessionId);
+    }
+
+    @Override
+    public void onBackPressed() {
+        leaveSession();
+    }
+
+    private void leaveSession() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.leaving_session_confirmation_title);
+        builder.setMessage(R.string.leave_session_confimation);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        builder.show();
     }
 }
