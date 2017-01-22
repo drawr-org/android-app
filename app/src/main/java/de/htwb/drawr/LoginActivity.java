@@ -60,12 +60,12 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void resultDelivered(Integer result) {
                             if (result == HttpURLConnection.HTTP_OK && !sessionId.equals(PreferenceActivity.DUMMY_SESSION_ID)) {
-                                dialog.dismiss();
                                 startMainActivity(true, false, sessionId);
                             } else {
                                 Toast.makeText(LoginActivity.this, R.string.wrong_session_or_timeout, Toast.LENGTH_LONG)
                                         .show();
                             }
+                            dialog.dismiss();
                         }
                     });
                 } else {
