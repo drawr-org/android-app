@@ -82,6 +82,12 @@ public class DrawrChromeClient extends WebChromeClient {
             }
 
         }
+
+        @JavascriptInterface
+        public void serverShutdown() {
+            Toast.makeText(context, R.string.server_shutdown, Toast.LENGTH_LONG).show();
+            ((MainActivity)context).finish();
+        }
     }
 
 

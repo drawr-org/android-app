@@ -1,4 +1,4 @@
-let canvas = new Drawr.DrawingCanvas('canvasDiv', JSON.parse(Android.getOptions()));
+let canvas = new drawr.DrawrCanvas('canvasDiv', JSON.parse(Android.getOptions()));
 let client;
 function updateOptions() {
     let options = JSON.parse(Android.getOptions());
@@ -8,7 +8,7 @@ function updateOptions() {
 
 function clearCanvas() {
     console.log('updateUptions');
-    canvas.clearCanvas(true);
+    canvas.reset();
 }
 
 function undo() {
@@ -35,7 +35,7 @@ function connectAndNewSession(username, host, port) {
 }
 
 function initClient(username, options) {
-    client = new Drawr.ServerConnection({
+    client = new drawr.DrawrClient({
         name: username,
         id: '0'
     }, options);
@@ -43,6 +43,9 @@ function initClient(username, options) {
         if (client._user.name !== data.username) {
             canvas.remoteUpdate(JSON.parse(data.canvasState));
         }
+    });
+    client.addEventListener('server-down', function(data) {
+        Android.serverShutdown();
     });
 
     canvas.addEventListener('new-click', function(clicks) {
