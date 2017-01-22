@@ -14,6 +14,8 @@
     <string name="canvas">Canvas</string>
     <string name="preferences">Preferences</string>
     <string name="quit">Quit</string>
+    <string name="wrong_credentials">Please enter a username and configure the Host</string>
+    <string name="wrong_session_or_timeout">Invalid SessionID oder Host timed out!</string>
 
     <string name="joining_session">Joining Session…</string>
 

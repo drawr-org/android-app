@@ -59,12 +59,18 @@ public class LoginActivity extends AppCompatActivity {
                     SessionUtil.validateSessionAtHost(sessionId, host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
                         @Override
                         public void resultDelivered(Integer result) {
-                            if(result == HttpURLConnection.HTTP_OK && !sessionId.equals("__test__")) {
+                            if (result == HttpURLConnection.HTTP_OK && !sessionId.equals("__test__")) {
                                 dialog.dismiss();
                                 startMainActivity(true, false, sessionId);
+                            } else {
+                                Toast.makeText(LoginActivity.this, R.string.wrong_session_or_timeout, Toast.LENGTH_LONG)
+                                        .show();
                             }
                         }
                     });
+                } else {
+                    Toast.makeText(LoginActivity.this, R.string.wrong_credentials, Toast.LENGTH_LONG).show();
+                    showPreferences();
                 }
             }
         });
@@ -133,12 +139,16 @@ public class LoginActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_login_settings:
-                Intent intent = new Intent(this, PreferenceActivity.class);
-                startActivity(intent);
+                showPreferences();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showPreferences() {
+        Intent intent = new Intent(this, PreferenceActivity.class);
+        startActivity(intent);
     }
 
     @Override
