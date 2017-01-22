@@ -19,6 +19,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
     public static final String KEY_HOST_URL = "host_url";
     public static final String KEY_HOST_PORT = "port";
 
+    public static final String DUMMY_SESSION_ID = "__test__";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
                 //code for what you want it to do
                 String host = ((EditTextPreference)findPreference(KEY_HOST_URL)).getText();
                 String port = ((EditTextPreference)findPreference(KEY_HOST_PORT)).getText();
-                SessionUtil.validateSessionAtHost("__test__", host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
+                SessionUtil.validateSessionAtHost(DUMMY_SESSION_ID, host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
                     @Override
                     public void resultDelivered(Integer result) {
                         int reference;
@@ -75,8 +77,8 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
         if(intValue < 1 || intValue > 65535) {
             intValue = 3000;
         }
-        ((EditTextPreference)findPreference(KEY_HOST_PORT)).setText(""+intValue);
+        ((EditTextPreference)findPreference(KEY_HOST_PORT)).setText(Integer.toString(intValue));
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putString(KEY_HOST_PORT, ""+intValue).commit();
+        prefs.edit().putString(KEY_HOST_PORT, Integer.toString(intValue)).commit();
     }
 }

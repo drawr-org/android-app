@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     SessionUtil.validateSessionAtHost(sessionId, host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
                         @Override
                         public void resultDelivered(Integer result) {
-                            if (result == HttpURLConnection.HTTP_OK && !sessionId.equals("__test__")) {
+                            if (result == HttpURLConnection.HTTP_OK && !sessionId.equals(PreferenceActivity.DUMMY_SESSION_ID)) {
                                 dialog.dismiss();
                                 startMainActivity(true, false, sessionId);
                             } else {
