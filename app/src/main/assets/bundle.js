@@ -1,7 +1,9 @@
-let canvas = new drawr.DrawrCanvas('canvasDiv', JSON.parse(Android.getOptions()));
-let client;
+'use strict';
+
+var canvas = new drawr.DrawrCanvas('canvasDiv', JSON.parse(Android.getOptions()));
+var client = void 0;
 function updateOptions() {
-    let options = JSON.parse(Android.getOptions());
+    var options = JSON.parse(Android.getOptions());
     console.log(options);
     canvas.updateOptions(options);
 }
@@ -17,7 +19,7 @@ function undo() {
 }
 
 function connectAndJoinSession(username, host, port, sessionId) {
-    let options = {
+    var options = {
         host: host,
         port: port
     };
@@ -26,7 +28,7 @@ function connectAndJoinSession(username, host, port, sessionId) {
 }
 
 function connectAndNewSession(username, host, port) {
-    let options = {
+    var options = {
         host: host,
         port: port
     };
@@ -39,40 +41,36 @@ function initClient(username, options) {
         name: username,
         id: '0'
     }, options);
-    client.addEventListener('update-canvas', function(data) {
+    client.addEventListener('update-canvas', function (data) {
         if (client._user.name !== data.username) {
             canvas.remoteUpdate(JSON.parse(data.canvasState));
         }
     });
-    client.addEventListener('server-down', function(data) {
+    client.addEventListener('server-down', function (data) {
         console.log('server-down');
         Android.serverShutdown();
     });
 
-    canvas.addEventListener('new-click', function(clicks) {
+    canvas.addEventListener('new-click', function (clicks) {
         client.sendCanvasUpdate(clicks);
     });
 }
 
 function joinSession(sessionId) {
     console.log('joinSession');
-    client.joinSession(sessionId)
-        .then(() => {
-            Android.joinSessionCallback('true');
-        })
-        .catch(() => {
-            Android.joinSessionCallback('false');
-        });
+    client.joinSession(sessionId).then(function () {
+        Android.joinSessionCallback('true');
+    }).catch(function () {
+        Android.joinSessionCallback('false');
+    });
 }
 
 function newSession() {
     console.log('newSession');
-    client.newSession('Android')
-        .then(id => {
-            Android.newSessionCallback('true', id);
-        })
-        .catch(err => {
-            console.log(err);
-            Android.newSessionCallback('false', '');
-        });
+    client.newSession('Android').then(function (id) {
+        Android.newSessionCallback('true', id);
+    }).catch(function (err) {
+        console.log(err);
+        Android.newSessionCallback('false', '');
+    });
 }
