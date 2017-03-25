@@ -1,9 +1,7 @@
 package de.htwb.drawr;
 
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -211,9 +209,9 @@ public class CanvasFragment extends Fragment implements OnDialogClosedListener {
     private void processExtras() {
         Bundle extras = getArguments();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String username = prefs.getString(PreferenceActivity.KEY_USERNAME, "");
-        String host = prefs.getString(PreferenceActivity.KEY_HOST_URL, "");
-        String port = prefs.getString(PreferenceActivity.KEY_HOST_PORT, "3000");
+        String username = prefs.getString(DrawrPreferenceActivity.KEY_USERNAME, "");
+        String host = prefs.getString(DrawrPreferenceActivity.KEY_HOST_URL, "");
+        String port = prefs.getString(DrawrPreferenceActivity.KEY_HOST_PORT, "3000");
         boolean online = extras.getBoolean(EXTRAS_KEY_ONLINE, false);
         if(online) {
             boolean newSession = extras.getBoolean(EXTRAS_KEY_NEW_SESSION, false);

@@ -41,25 +41,26 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+
+
         editText = (CustomEditText)findViewById(R.id.sessionIdED);
 
         editText.setListener(new CustomEditText.Listener() {
             @Override
             public void actionPerformed() {
                 //start session
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                final String username = prefs.getString(PreferenceActivity.KEY_USERNAME,new String());
-                final String host = prefs.getString(PreferenceActivity.KEY_HOST_URL,new String());
-                final String port = prefs.getString(PreferenceActivity.KEY_HOST_PORT, "3000");
+                final String host = prefs.getString(DrawrPreferenceActivity.KEY_HOST_URL,new String());
+                final String port = prefs.getString(DrawrPreferenceActivity.KEY_HOST_PORT, "3000");
                 final String sessionId = ((EditText)findViewById(R.id.sessionIdED)).getText().toString();
                 final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
                 dialog.setTitle(R.string.joining_session);
                 dialog.show();
-                if(checkCredentials(username, host)) {
+                if(checkCredentials(prefs)) {
                     SessionUtil.validateSessionAtHost(sessionId, host, port, new SessionUtil.AsyncWaiterListener<Integer>() {
                         @Override
                         public void resultDelivered(Integer result) {
-                            if (result == HttpURLConnection.HTTP_OK && !sessionId.equals(PreferenceActivity.DUMMY_SESSION_ID)) {
+                            if (result == HttpURLConnection.HTTP_OK && !sessionId.equals(DrawrPreferenceActivity.DUMMY_SESSION_ID)) {
                                 startMainActivity(true, false, sessionId);
                             } else {
                                 Toast.makeText(LoginActivity.this, R.string.wrong_session_or_timeout, Toast.LENGTH_LONG)
@@ -79,13 +80,19 @@ public class LoginActivity extends AppCompatActivity {
         newSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                 builder.setTitle(R.string.new_session_title);
                 builder.setMessage(R.string.new_session_question);
                 builder.setPositiveButton(R.string.online, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startMainActivity(true, true, new String());
+                        if(checkCredentials(prefs)) {
+                            startMainActivity(true, true, new String());
+                        } else {
+                            Toast.makeText(LoginActivity.this, R.string.wrong_credentials, Toast.LENGTH_LONG).show();
+                            showPreferences();
+                        }
                     }
                 });
                 builder.setNegativeButton(R.string.offline, new DialogInterface.OnClickListener() {
@@ -114,8 +121,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private boolean checkCredentials(String username, String host) {
+    private static final boolean checkCredentials(SharedPreferences prefs) {
         Log.d("LoginActivity", "Checking credentials...");
+        final String host = prefs.getString(DrawrPreferenceActivity.KEY_HOST_URL,new String());
+        final String username = prefs.getString(DrawrPreferenceActivity.KEY_USERNAME, new String());
         return !(username.isEmpty() || host.isEmpty());
     }
     private void startMainActivity(boolean online, boolean newSession, String sessionId) {
@@ -147,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showPreferences() {
-        Intent intent = new Intent(this, PreferenceActivity.class);
+        Intent intent = new Intent(this, DrawrPreferenceActivity.class);
         startActivity(intent);
     }
 
