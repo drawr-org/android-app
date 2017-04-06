@@ -1,7 +1,10 @@
 package de.htwb.drawr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +14,7 @@ import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
 import com.google.android.gms.vision.barcode.Barcode;
 import de.htwb.drawr.util.SessionUtil;
+import de.htwb.drawr.util.UriUtil;
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
 import java.util.List;
@@ -32,9 +36,22 @@ public class QRScanActivity extends AppCompatActivity implements BarcodeRetrieve
 
     @Override
     public void onRetrieved(final Barcode barcode) {
-        String ulid = barcode.displayValue;
+        Log.d("QRScanActivity","Uri: "+barcode.displayValue);
+        Uri uri = Uri.parse(barcode.displayValue);
+        String ulid = UriUtil.getSessionIdFromUri(uri);
         if(SessionUtil.validateUlid(ulid)) {
             Log.d("QRScanActivity", "valid: "+ulid);
+            String host = UriUtil.getHostFromUri(uri);
+            String port = UriUtil.getPortFromUri(uri);
+            if(host == null || port == null) {
+
+            } else {
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(DrawrPreferenceActivity.KEY_HOST_URL, host);
+                editor.putString(DrawrPreferenceActivity.KEY_HOST_PORT, port);
+                editor.commit();
+            }
             Intent i = new Intent();
             i.putExtra(LoginActivity.KEY_QR_VALUE, ulid);
             setResult(RESULT_OK, i);

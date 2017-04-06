@@ -1,8 +1,11 @@
 package de.htwb.drawr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,6 +20,8 @@ import android.widget.TextView;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 import com.google.zxing.WriterException;
+import com.google.zxing.common.StringUtils;
+import de.htwb.drawr.util.UriUtil;
 
 /**
  * Created by Lao on 03.11.2016.
@@ -37,11 +42,15 @@ public class ShareFragment extends Fragment {
             textView.setText(R.string.offline_session_id);
             imageButton.setVisibility(View.GONE);
         } else {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String host = sharedPreferences.getString(DrawrPreferenceActivity.KEY_HOST_URL, "");
+            String port = sharedPreferences.getString(DrawrPreferenceActivity.KEY_HOST_PORT, "");
+            final Uri uri = UriUtil.createUri(host, port, sessionId);
             textView.setText(sessionId);
             try {
                 Resources r = getActivity().getResources();
                 float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, r.getDisplayMetrics());
-                QRGEncoder encoder = new QRGEncoder(sessionId, null, QRGContents.Type.TEXT, Math.round(px));
+                QRGEncoder encoder = new QRGEncoder(uri.toString(), null, QRGContents.Type.TEXT, Math.round(px));
                 ((TextView) view.findViewById(R.id.preference_session_id)).setText(sessionId);
 
                 imageButton.setImageBitmap(encoder.encodeAsBitmap());

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import de.htwb.drawr.util.SessionUtil;
+import de.htwb.drawr.util.UriUtil;
 import de.htwb.drawr.view.CustomEditText;
 
 import java.net.HttpURLConnection;
@@ -41,7 +43,29 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if(action == Intent.ACTION_VIEW) {
+            Uri uri = intent.getData();
+            Log.d("LoginActivity", "Uri: "+uri.toString());
+            String host = UriUtil.getHostFromUri(uri);
+            String port = UriUtil.getPortFromUri(uri);
+
+            if(host == null || port == null) {
+
+            } else {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(DrawrPreferenceActivity.KEY_HOST_URL, host);
+                editor.putString(DrawrPreferenceActivity.KEY_HOST_PORT, port);
+                editor.commit();
+
+                String sessionId = UriUtil.getSessionIdFromUri(uri);
+                startMainActivity(true, false, sessionId);
+
+            }
+        }
 
 
         editText = (CustomEditText)findViewById(R.id.sessionIdED);
