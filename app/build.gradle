@@ -31,3 +31,24 @@ dependencies {
     compile 'androidmads.library.qrgenearator:QRGenearator:1.0.0'
     compile 'com.github.clans:fab:1.6.4'
 }
+
+apply plugin: 'com.moowork.node'
+
+node {
+    version = '6.9.2'
+    download = true
+}
+
+task npmExport(type: NpmTask) {
+    dependsOn npmInstall
+    // install the express package only
+    args = ['run', 'export']
+}
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.preBuild.dependsOn(npmExport)
+    }
+}
+
+
+

@@ -1,3 +1,5 @@
+import drawr from 'drawr';
+console.log(drawr)
 let canvas = new drawr.DrawrCanvas('canvasDiv', JSON.parse(Android.getOptions()));
 let client;
 function updateOptions() {
@@ -5,16 +7,19 @@ function updateOptions() {
     console.log(options);
     canvas.updateOptions(options);
 }
+export {updateOptions};
 
 function clearCanvas() {
     console.log('updateUptions');
     canvas.reset();
 }
+export {clearCanvas};
 
 function undo() {
     console.log('undo');
     canvas.undoLastClick();
 }
+export {undo};
 
 function connectAndJoinSession(username, host, port, sessionId) {
     let options = {
@@ -24,6 +29,7 @@ function connectAndJoinSession(username, host, port, sessionId) {
     initClient(username, options);
     joinSession(sessionId);
 }
+export {connectAndJoinSession};
 
 function connectAndNewSession(username, host, port) {
     let options = {
@@ -33,6 +39,7 @@ function connectAndNewSession(username, host, port) {
     initClient(username, options);
     newSession();
 }
+export {connectAndNewSession};
 
 function initClient(username, options) {
     client = new drawr.DrawrClient({
@@ -53,6 +60,7 @@ function initClient(username, options) {
         client.sendCanvasUpdate(clicks);
     });
 }
+export {initClient};
 
 function joinSession(sessionId) {
     console.log('joinSession');
@@ -64,6 +72,7 @@ function joinSession(sessionId) {
             Android.joinSessionCallback('false');
         });
 }
+export {joinSession};
 
 function newSession() {
     console.log('newSession');
@@ -76,3 +85,4 @@ function newSession() {
             Android.newSessionCallback('false', '');
         });
 }
+export {newSession};

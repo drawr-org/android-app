@@ -79,7 +79,7 @@ public class PenSettings {
         JSONObject object = new JSONObject();
         try {
             String strColor = getColorHexString();
-            object.put("colour", strColor);
+            object.put("color", strColor);
             object.put("width", stroke);
             object.put("type", penTool.name().toLowerCase());
         } catch (JSONException e) {
