@@ -9,16 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/drawr-team/android-app.git"
+    "url": "git+https://github.com/drawr-org/android-app.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/drawr-team/android-app/issues"
+    "url": "https://github.com/drawr-org/android-app/issues"
   },
-  "homepage": "https://github.com/drawr-team/android-app#readme",
+  "homepage": "https://github.com/drawr-org/android-app#readme",
   "dependencies": {
-    "drawr": "git+https://github.com/drawr-team/drawrlib.git"
+    "drawr": "git+https://github.com/drawr-org/drawrlib.git"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
