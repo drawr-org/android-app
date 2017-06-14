@@ -16,6 +16,7 @@
                             android:inputType="numberDecimal"/>
         <Preference android:title="@string/test_connection"
                      android:key="test_connection"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

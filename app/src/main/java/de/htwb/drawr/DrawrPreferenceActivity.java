@@ -2,12 +2,16 @@ package de.htwb.drawr;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.preference.*;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.htwb.drawr.util.SessionUtil;
 
@@ -37,6 +41,16 @@ public class DrawrPreferenceActivity extends PreferenceActivity {
         setTitle(R.string.preferences);
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fragment).commit();
+
+        TextView textView = new TextView(this);
+        textView.setText(getString(R.string.version)+": "+BuildConfig.VERSION_NAME);
+        final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.BOTTOM|Gravity.CENTER;
+        ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
+        rootView.addView(textView, params);
+
     }
 
     @Override
@@ -51,7 +65,6 @@ public class DrawrPreferenceActivity extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
             addPreferencesFromResource(R.xml.app_preferences);
 
             Preference button = findPreference("test_connection");

@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Drawr</string>
+    <string name="app_name">drawr</string>
+    <string name="version">Version</string>
     <string name="session_id">Session ID</string>
     <string name="new_session_title">New Session</string>
     <string name="leaving_session_confirmation_title">Leaving Session</string>

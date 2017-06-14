@@ -31,9 +31,15 @@ sonarqube {
     }
 }
 
+def getGitVersion() {
+    ext.revision = 'git rev-list --count HEAD'.execute().text.trim()
+    println "1.0-r${revision}"
+    return "1.0-r${revision}"
+}
+
 allprojects {
     group "de.htwb"
-    version "1.0.0-SNAPSHOT"
+    version getGitVersion()
 
     repositories {
         jcenter()
